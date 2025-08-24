@@ -18,10 +18,12 @@
 
 #include "global.h"
 #include "userInput.h"
+#include "camera.h"
 
 struct Engine {
 	GLFWwindow* window;
 	Shader shader;
+	Camera camera;
 	float currentFrame = 0.0f;
 	unsigned int VBO, VAO;
 	unsigned int texture1;

@@ -270,13 +270,13 @@ void Engine::keyInput()
         glfwSetWindowShouldClose(window, true);
     const float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPos += cameraSpeed * cameraFront;
+		cameraPos += cameraSpeed * cameraFront; // move forward
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPos -= cameraSpeed * cameraFront;
+		cameraPos -= cameraSpeed * cameraFront; // move backward
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed; // move left
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed; // move right
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
         cameraPos.y += cameraSpeed; // move up
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
@@ -306,20 +306,18 @@ void Engine::drawShape()
 
 
     glBindVertexArray(VAO);
-    for (unsigned int i = 0; i < cubeCount; i++)
+    for (uint16_t x = 0; x < cubeCount; x++)
     {
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, cubePositions[i]);
-
-        float angle = speed * currentFrame * rotationFactors[i]; // apply per-cube randomness
-
-        // Optional: You can also randomize rotation axis if you want:
-        glm::vec3 rotationAxis = glm::normalize(glm::vec3(rotationFactors[i], rotationFactors[i], rotationFactors[i]));
-
-        model = glm::rotate(model, glm::radians(angle), rotationAxis);
-
-        glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        for (uint16_t y = 0; y < cubeCount; y++)
+        {
+            for (uint16_t z = 0; z < cubeCount; z++)
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, glm::vec3(x, y, z));
+                glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
+                glDrawArrays(GL_TRIANGLES, 0, 36);
+            }
+        }
     }
 }
 

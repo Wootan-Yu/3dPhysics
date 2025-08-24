@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-inline const int cubeCount = 500;
+inline const int cubeCount = 30;
 inline glm::vec3 cubePositions[cubeCount];
 inline float rotationFactors[cubeCount];
 
