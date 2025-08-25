@@ -84,80 +84,182 @@ void Engine::initShape()
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    float vertices[] = {
+    float cubeVertices[] = {
         // FRONT face (-Z), top-down mapped (X-Z)
-        -0.5f, -0.5f, -0.5f,  uMin, vMax,
-         0.5f, -0.5f, -0.5f,  uMax, vMax,
-         0.5f,  0.5f, -0.5f,  uMax, vMin,
-         0.5f,  0.5f, -0.5f,  uMax, vMin,
-        -0.5f,  0.5f, -0.5f,  uMin, vMin,
-        -0.5f, -0.5f, -0.5f,  uMin, vMax,
+        -0.5f, -0.5f, -0.5f,  uMin, vMax, 0.0f,  0.0f, -1.0f,
+         0.5f, -0.5f, -0.5f,  uMax, vMax, 0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  uMax, vMin, 0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  uMax, vMin, 0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  uMin, vMin, 0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  uMin, vMax, 0.0f,  0.0f, -1.0f,
 
         // BACK face (+Z), top-down mapped (X-Z)
-        -0.5f, -0.5f,  0.5f,  uMin, vMax,
-         0.5f, -0.5f,  0.5f,  uMax, vMax,
-         0.5f,  0.5f,  0.5f,  uMax, vMin,
-         0.5f,  0.5f,  0.5f,  uMax, vMin,
-        -0.5f,  0.5f,  0.5f,  uMin, vMin,
-        -0.5f, -0.5f,  0.5f,  uMin, vMax,
+        -0.5f, -0.5f,  0.5f,  uMin, vMax, 0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  uMax, vMax, 0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  uMax, vMin, 0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  uMax, vMin, 0.0f,  0.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  uMin, vMin, 0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  uMin, vMax, 0.0f,  0.0f, 1.0f,
 
         // TOP face (+Y), standard top-down (X-Z)
-        -0.5f,  0.5f, -0.5f,  uTopMin, vTopMax,
-         0.5f,  0.5f, -0.5f,  uTopMax, vTopMax,
-         0.5f,  0.5f,  0.5f,  uTopMax, vTopMin,
-         0.5f,  0.5f,  0.5f,  uTopMax, vTopMin,
-        -0.5f,  0.5f,  0.5f,  uTopMin, vTopMin,
-        -0.5f,  0.5f, -0.5f,  uTopMin, vTopMax,
+        -0.5f,  0.5f, -0.5f,  uTopMin, vTopMax, 0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  uTopMax, vTopMax, 0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  uTopMax, vTopMin, 0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  uTopMax, vTopMin, 0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  uTopMin, vTopMin, 0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  uTopMin, vTopMax, 0.0f,  1.0f,  0.0f,
 
         // BOTTOM face (-Y), top-down mapped (X-Z)
-        -0.5f, -0.5f, -0.5f,  uBottomMin, vBottomMax,
-         0.5f, -0.5f, -0.5f,  uBottomMax, vBottomMax,
-         0.5f, -0.5f,  0.5f,  uBottomMax, vBottomMin,
-         0.5f, -0.5f,  0.5f,  uBottomMax, vBottomMin,
-        -0.5f, -0.5f,  0.5f,  uBottomMin, vBottomMin,
-        -0.5f, -0.5f, -0.5f,  uBottomMin, vBottomMax,
+        -0.5f, -0.5f, -0.5f,  uBottomMin, vBottomMax, 0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  uBottomMax, vBottomMax, 0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  uBottomMax, vBottomMin, 0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  uBottomMax, vBottomMin, 0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  uBottomMin, vBottomMin, 0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  uBottomMin, vBottomMax, 0.0f, -1.0f,  0.0f,
 
         // LEFT face (-X), top-down mapped (X-Z)
-        -0.5f, -0.5f, -0.5f,  uMin, vMax,
-        -0.5f, -0.5f,  0.5f,  uMax, vMax,
-        -0.5f,  0.5f,  0.5f,  uMax, vMin,
-        -0.5f,  0.5f,  0.5f,  uMax, vMin,
-        -0.5f,  0.5f, -0.5f,  uMin, vMin,
-        -0.5f, -0.5f, -0.5f,  uMin, vMax,
+        -0.5f, -0.5f, -0.5f,  uMin, vMax, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  uMax, vMax, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  uMax, vMin, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  uMax, vMin, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  uMin, vMin, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  uMin, vMax, -1.0f,  0.0f,  0.0f,
 
         // RIGHT face (+X), top-down mapped (X-Z)
-         0.5f, -0.5f, -0.5f,  uMin, vMax,
-         0.5f, -0.5f,  0.5f,  uMax, vMax,
-         0.5f,  0.5f,  0.5f,  uMax, vMin,
-         0.5f,  0.5f,  0.5f,  uMax, vMin,
-         0.5f,  0.5f, -0.5f,  uMin, vMin,
-         0.5f, -0.5f, -0.5f,  uMin, vMax,
+         0.5f, -0.5f, -0.5f,  uMin, vMax, 1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  uMax, vMax, 1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  uMax, vMin, 1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  uMax, vMin, 1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  uMin, vMin, 1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  uMin, vMax, 1.0f,  0.0f,  0.0f,
     };
 
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
+    glGenVertexArrays(1, &VAOcube);
+    glGenBuffers(1, &VBOcube);
 
-    glBindVertexArray(VAO);
+    glBindVertexArray(VAOcube);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, VBOcube);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // texture coord attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+	// normal attribute
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+
+
+
+    float planeVertices[] = {
+		// positions          // texture    // normals
+         0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   0.0f, 0.0f, 1.0f, // top right
+         0.5f, -0.5f, 0.0f,   1.0f, 0.0f,   0.0f, 0.0f, 1.0f, // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,   0.0f, 0.0f, 1.0f, // bottom left
+        -0.5f,  0.5f, 0.0f,   0.0f, 1.0f,   0.0f, 0.0f, 1.0f, // top left 
+    };
+
+	unsigned int planeIndices[] = {
+		0, 1, 3,   // first triangle
+		1, 2, 3    // second triangle
+	};
+
+    GLuint EBO;
+
+	glGenVertexArrays(1, &VAOplane);
+	glGenBuffers(1, &VBOplane);
+
+	glBindVertexArray(VAOplane);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBOplane);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), planeVertices, GL_STATIC_DRAW);
+
+
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(planeIndices), planeIndices, GL_STATIC_DRAW);
+    
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+
+
+
+	float lightCubeVertices[] = {
+        -0.5f, -0.5f, -0.5f,  
+         0.5f, -0.5f, -0.5f,  
+         0.5f,  0.5f, -0.5f,  
+         0.5f,  0.5f, -0.5f,  
+        -0.5f,  0.5f, -0.5f,  
+        -0.5f, -0.5f, -0.5f,  
+
+        -0.5f, -0.5f,  0.5f,  
+         0.5f, -0.5f,  0.5f,  
+         0.5f,  0.5f,  0.5f, 
+         0.5f,  0.5f,  0.5f, 
+        -0.5f,  0.5f,  0.5f, 
+        -0.5f, -0.5f,  0.5f, 
+
+        -0.5f,  0.5f,  0.5f, 
+        -0.5f,  0.5f, -0.5f,  
+        -0.5f, -0.5f, -0.5f,  
+        -0.5f, -0.5f, -0.5f,  
+        -0.5f, -0.5f,  0.5f,  
+        -0.5f,  0.5f,  0.5f, 
+
+         0.5f,  0.5f,  0.5f, 
+         0.5f,  0.5f, -0.5f, 
+         0.5f, -0.5f, -0.5f, 
+         0.5f, -0.5f, -0.5f,  
+         0.5f, -0.5f,  0.5f, 
+         0.5f,  0.5f,  0.5f, 
+
+        -0.5f, -0.5f, -0.5f, 
+         0.5f, -0.5f, -0.5f,  
+         0.5f, -0.5f,  0.5f,  
+         0.5f, -0.5f,  0.5f, 
+        -0.5f, -0.5f,  0.5f, 
+        -0.5f, -0.5f, -0.5f, 
+
+        -0.5f,  0.5f, -0.5f,  
+         0.5f,  0.5f, -0.5f, 
+         0.5f,  0.5f,  0.5f,  
+         0.5f,  0.5f,  0.5f,  
+        -0.5f,  0.5f,  0.5f, 
+        -0.5f,  0.5f, -0.5f,
+    };
+
+	glGenVertexArrays(1, &VAOlightCube);
+    glGenBuffers(1, &VBOlightCube);
+
+	glBindVertexArray(VAOlightCube);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBOlightCube);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lightCubeVertices), lightCubeVertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 }
 
 void Engine::initShader()
 {
     shader.loadShaderProgramFromFile(RESOURCES_PATH "vertex.vert", RESOURCES_PATH "fragment.frag");
-    shader.bind();
+	lightCubeShader.loadShaderProgramFromFile(RESOURCES_PATH "lightCubeVertex.vert", RESOURCES_PATH "lightCubeFrag.frag");
 }
 
 void Engine::initTexture()
 {
+	//blocks texture
     glGenTextures(1, &texture1);
     glBindTexture(GL_TEXTURE_2D, texture1); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
     // set the texture wrapping parameters
@@ -185,7 +287,33 @@ void Engine::initTexture()
         std::cout << "Failed to load texture: " << stbi_failure_reason() << std::endl;
     }
 
-    glUniform1i(shader.getUniform("texture1"), 0); // set the texture unit 0 to texture1
+
+
+    //plane texture
+    glGenTextures(1, &texture2);
+    glActiveTexture(GL_TEXTURE1); // <-- Use texture unit 1
+    glBindTexture(GL_TEXTURE_2D, texture2);
+
+    // Set texture wrapping/filtering options
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    // Load texture image
+    int width2, height2, nrChannels2;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* data2 = stbi_load(RESOURCES_PATH "wall.jpg", &width2, &height2, &nrChannels2, 0);
+    if (data2)
+    {
+        GLenum format = (nrChannels2 == 4) ? GL_RGBA : GL_RGB;
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width2, height2, 0, format, GL_UNSIGNED_BYTE, data2);
+        stbi_image_free(data2);
+    }
+    else
+    {
+        std::cout << "Failed to load second texture: " << stbi_failure_reason() << std::endl;
+    }
 }
 
 void Engine::run()
@@ -233,14 +361,12 @@ void Engine::update()
 
 }
 
-void Engine::drawTexture()
-{
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-}
-
 void Engine::drawShape()
 {
+    float time = glfwGetTime(); // seconds since program start
+    float radius = 5.0f;
+
+    shader.bind();
     //projection matrix
     glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     glUniformMatrix4fv(shader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
@@ -249,21 +375,73 @@ void Engine::drawShape()
     view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, target position, up vector
     glUniformMatrix4fv(shader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
 
+    glm::vec3 lightColor(0.8f, 0.8f, 0.8f);
+    glm::vec3 lightPos(1.2f, 3.0f, 1.0f);
 
-    glBindVertexArray(VAO);
-    for (uint16_t x = 0; x < cubeCount; x++)
+    lightPos.x = sin(time) * radius;
+    lightPos.y = 3.0f; // fixed height
+    lightPos.z = cos(time) * radius;
+
+	//cubes
+    glUniform1i(shader.getUniform("choice"), 0); // set the texture unit 0 to texture1
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glUniform1i(shader.getUniform("texture1"), 0); // set the texture unit 0 to texture1
+
+    glBindVertexArray(VAOcube);
+    /*for (uint16_t x = 0; x < cubeCount; x++)
     {
         for (uint16_t y = 0; y < cubeCount; y++)
         {
             for (uint16_t z = 0; z < cubeCount; z++)
             {
                 glm::mat4 model = glm::mat4(1.0f);
-                model = glm::translate(model, glm::vec3(x, y, z));
+                model = glm::translate(model, glm::vec3(x, y + 0.51f, z));
+				glUniform3f(shader.getUniform("lightColor"), lightColor[0], lightColor[1], lightColor[2]);
+                glUniform3fv(shader.getUniform("lightposition"), 1, &lightPos[0]);
                 glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
                 glDrawArrays(GL_TRIANGLES, 0, 36);
             }
         }
-    }
+    }*/
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.f, 0.51f, 0.f));
+    glUniform3f(shader.getUniform("lightColor"), lightColor[0], lightColor[1], lightColor[2]);
+    glUniform3fv(shader.getUniform("lightPosition"), 1, &lightPos[0]);
+    glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    
+
+    //plane
+    glUniform1i(shader.getUniform("choice"), 1); // set the texture unit 0 to texture1
+    glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+    glUniform1i(shader.getUniform("texture2"), 1); // set the texture unit 1 to texture2
+
+	glBindVertexArray(VAOplane);
+    model = glm::mat4(1.0f);
+    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(10.0f, 10.0f, 1.0f));
+	model = glm::translate(model, glm::vec3(0.f, 0.f, 0.f));
+    glUniform3f(shader.getUniform("lightColor"), lightColor[0], lightColor[1], lightColor[2]);
+	glUniform3fv(shader.getUniform("lightPosition"), 1, &lightPos[0]);
+	glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+
+    //light source
+    lightCubeShader.bind();
+    glUniformMatrix4fv(lightCubeShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+    glUniformMatrix4fv(lightCubeShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
+	
+	glBindVertexArray(VAOlightCube);
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, lightPos);
+	model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+	glUniformMatrix4fv(lightCubeShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
 void Engine::render() 
@@ -284,7 +462,6 @@ void Engine::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-	drawTexture();
 	drawShape();
 
 
