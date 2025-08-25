@@ -40,9 +40,4 @@ struct Engine {
 	void drawTexture();
 	void drawShape();
 	void render();
-
-
-	void generateEvenlyDistributedCubePositionsWithJitter();
-	void generateRotationFactors();
-	float randomFloat(float min, float max);
 };

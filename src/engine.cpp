@@ -50,58 +50,6 @@ void Engine::init()
 #pragma endregion
 }
 
-void Engine::generateEvenlyDistributedCubePositionsWithJitter()
-{
-    int count = cubeCount;
-    
-        // Compute grid size (e.g., 2x2x3 for 10 cubes)
-    int gridSize = std::ceil(std::cbrt(count));
-    
-    float spaceSize = 20.0f;
-    float spacing = spaceSize / gridSize;
-    float start = -spaceSize / 2.0f + spacing / 2.0f;
-    
-    float jitterAmount = spacing * 0.2f; // 20% of spacing
-    
-    int index = 0;
-    for (int x = 0; x < gridSize && index < count; ++x) 
-    {
-        for (int y = 0; y < gridSize && index < count; ++y) 
-        {
-             for (int z = 0; z < gridSize && index < count; ++z)
-             {
-                    // Evenly spaced base position
-                    float posX = start + x * spacing;
-                    float posY = start + y * spacing;
-                    float posZ = start + z * spacing;
-    
-                    // Add random jitter (small offset)
-                    posX += randomFloat(-jitterAmount, jitterAmount);
-                    posY += randomFloat(-jitterAmount, jitterAmount);
-                    posZ += randomFloat(-jitterAmount, jitterAmount);
-    
-                    cubePositions[index++] = glm::vec3(posX, posY, posZ);
-             }
-        }
-    }
-}
-
-void Engine::generateRotationFactors()
-{
-    for (int i = 0; i < cubeCount; ++i) 
-    {
-        rotationFactors[i] = randomFloat(0.0f, 1.0f);
-    }
-}
-
-float Engine::randomFloat(float min, float max) 
-{
-    static std::random_device rd;
-    static std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> dis(min, max);
-    return dis(gen);
-}
-
 void Engine::initShape()
 {
     float tileSize = 1.0f / 16.0f; // = 0.0625 (tileSize per texture)
@@ -185,9 +133,6 @@ void Engine::initShape()
          0.5f,  0.5f, -0.5f,  uMin, vMin,
          0.5f, -0.5f, -0.5f,  uMin, vMax,
     };
-
-    generateEvenlyDistributedCubePositionsWithJitter();
-    generateRotationFactors();
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
