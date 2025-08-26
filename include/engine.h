@@ -32,10 +32,13 @@ struct Engine {
 	GLuint VBOplane, VAOplane;
 	GLuint VBOlightCube, VAOlightCube;
 	GLuint VAOobject;
+
 	GLuint texture1; //cube
 	GLuint texture2; //plane
 	GLuint texture3; //object cube
 	GLuint texture4; //object cube
+
+	glm::vec3 pointLightPositions[4];
 
 	Engine();
 	void init();
