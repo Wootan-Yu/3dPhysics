@@ -560,26 +560,28 @@ void Engine::drawShape()
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
+    glm::vec3 pointLightColors[] = {
+    glm::vec3(1.0f, 0.5f, 0.0f), // Orange
+    glm::vec3(1.0f, 0.0f, 0.0f), // Red
+    glm::vec3(0.0f, 1.0f, 0.0f), // Green
+    glm::vec3(0.0f, 0.0f, 1.0f)  // Blue
+    };
+
     //light source
     lightCubeShader.bind();
     glUniformMatrix4fv(lightCubeShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(lightCubeShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
 	
 	glBindVertexArray(VAOlightCube);
-    for (const auto& pos : pointLightPositions) //these are for the 4 random lights
+    for (uint8_t i = 0; i < 4; i++) //these are for the 4 random lights
     {
         model = glm::mat4(1.0f);
-	    model = glm::translate(model, pos);
+	    model = glm::translate(model, pointLightPositions[i]);
 	    model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+        glUniform3fv(lightCubeShader.getUniform("color"), 1, &pointLightColors[i][0]);
 	    glUniformMatrix4fv(lightCubeShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
 	    glDrawArrays(GL_TRIANGLES, 0, 36);
     }
-
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, lightPos);
-    model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-    glUniformMatrix4fv(lightCubeShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
 	
 
 
@@ -620,37 +622,42 @@ void Engine::drawShape()
     glUniform3f(objectShader.getUniform("dirLight.diffuse"), 0.4f, 0.4f, 0.4f);
     glUniform3f(objectShader.getUniform("dirLight.specular"), 0.5f, 0.5f, 0.5f);
 
+    // Orange light
     glUniform3fv(objectShader.getUniform("pointLights[0].position"), 1, &pointLightPositions[0][0]);
-	glUniform3f(objectShader.getUniform("pointLights[0].ambient"), 0.05f, 0.05f, 0.05f);
-    glUniform3f(objectShader.getUniform("pointLights[0].diffuse"), 0.8f, 0.8f, 0.8f);
+    glUniform3f(objectShader.getUniform("pointLights[0].ambient"), 0.05f, 0.025f, 0.0f);
+    glUniform3f(objectShader.getUniform("pointLights[0].diffuse"), 1.0f, 0.5f, 0.0f);
     glUniform3f(objectShader.getUniform("pointLights[0].specular"), 1.0f, 1.0f, 1.0f);
     glUniform1f(objectShader.getUniform("pointLights[0].constant"), 1.0f);
     glUniform1f(objectShader.getUniform("pointLights[0].linear"), 0.09f);
     glUniform1f(objectShader.getUniform("pointLights[0].quadratic"), 0.032f);
 
+    // Red light
     glUniform3fv(objectShader.getUniform("pointLights[1].position"), 1, &pointLightPositions[1][0]);
-    glUniform3f(objectShader.getUniform("pointLights[1].ambient"), 0.05f, 0.05f, 0.05f);
-    glUniform3f(objectShader.getUniform("pointLights[1].diffuse"), 0.8f, 0.8f, 0.8f);
+    glUniform3f(objectShader.getUniform("pointLights[1].ambient"), 0.05f, 0.01f, 0.01f);
+    glUniform3f(objectShader.getUniform("pointLights[1].diffuse"), 1.0f, 0.0f, 0.0f);
     glUniform3f(objectShader.getUniform("pointLights[1].specular"), 1.0f, 1.0f, 1.0f);
     glUniform1f(objectShader.getUniform("pointLights[1].constant"), 1.0f);
     glUniform1f(objectShader.getUniform("pointLights[1].linear"), 0.09f);
     glUniform1f(objectShader.getUniform("pointLights[1].quadratic"), 0.032f);
 
+    // Green light
     glUniform3fv(objectShader.getUniform("pointLights[2].position"), 1, &pointLightPositions[2][0]);
-    glUniform3f(objectShader.getUniform("pointLights[2].ambient"), 0.05f, 0.05f, 0.05f);
-    glUniform3f(objectShader.getUniform("pointLights[2].diffuse"), 0.8f, 0.8f, 0.8f);
+    glUniform3f(objectShader.getUniform("pointLights[2].ambient"), 0.01f, 0.05f, 0.01f);
+    glUniform3f(objectShader.getUniform("pointLights[2].diffuse"), 0.0f, 1.0f, 0.0f);
     glUniform3f(objectShader.getUniform("pointLights[2].specular"), 1.0f, 1.0f, 1.0f);
     glUniform1f(objectShader.getUniform("pointLights[2].constant"), 1.0f);
     glUniform1f(objectShader.getUniform("pointLights[2].linear"), 0.09f);
     glUniform1f(objectShader.getUniform("pointLights[2].quadratic"), 0.032f);
 
+    // Blue light
     glUniform3fv(objectShader.getUniform("pointLights[3].position"), 1, &pointLightPositions[3][0]);
-    glUniform3f(objectShader.getUniform("pointLights[3].ambient"), 0.05f, 0.05f, 0.05f);
-    glUniform3f(objectShader.getUniform("pointLights[3].diffuse"), 0.8f, 0.8f, 0.8f);
+    glUniform3f(objectShader.getUniform("pointLights[3].ambient"), 0.01f, 0.01f, 0.05f);
+    glUniform3f(objectShader.getUniform("pointLights[3].diffuse"), 0.0f, 0.0f, 1.0f);
     glUniform3f(objectShader.getUniform("pointLights[3].specular"), 1.0f, 1.0f, 1.0f);
     glUniform1f(objectShader.getUniform("pointLights[3].constant"), 1.0f);
     glUniform1f(objectShader.getUniform("pointLights[3].linear"), 0.09f);
     glUniform1f(objectShader.getUniform("pointLights[3].quadratic"), 0.032f);
+
 
     glUniform3fv(objectShader.getUniform("spotLight.position"), 1, &cameraPos[0]);
     glUniform3fv(objectShader.getUniform("spotLight.direction"), 1, &cameraFront[0]);
@@ -690,7 +697,7 @@ void Engine::render()
     glViewport(0, 0, width, height);
 
 
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
