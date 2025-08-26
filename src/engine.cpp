@@ -195,50 +195,52 @@ void Engine::initShape()
 
 
 
-	float lightCubeVertices[] = {
-        -0.5f, -0.5f, -0.5f,  
-         0.5f, -0.5f, -0.5f,  
-         0.5f,  0.5f, -0.5f,  
-         0.5f,  0.5f, -0.5f,  
-        -0.5f,  0.5f, -0.5f,  
-        -0.5f, -0.5f, -0.5f,  
+    float lightCubeVertices[] = {
+        // positions          // normals           // texture coords
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
 
-        -0.5f, -0.5f,  0.5f,  
-         0.5f, -0.5f,  0.5f,  
-         0.5f,  0.5f,  0.5f, 
-         0.5f,  0.5f,  0.5f, 
-        -0.5f,  0.5f,  0.5f, 
-        -0.5f, -0.5f,  0.5f, 
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
 
-        -0.5f,  0.5f,  0.5f, 
-        -0.5f,  0.5f, -0.5f,  
-        -0.5f, -0.5f, -0.5f,  
-        -0.5f, -0.5f, -0.5f,  
-        -0.5f, -0.5f,  0.5f,  
-        -0.5f,  0.5f,  0.5f, 
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-         0.5f,  0.5f,  0.5f, 
-         0.5f,  0.5f, -0.5f, 
-         0.5f, -0.5f, -0.5f, 
-         0.5f, -0.5f, -0.5f,  
-         0.5f, -0.5f,  0.5f, 
-         0.5f,  0.5f,  0.5f, 
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-        -0.5f, -0.5f, -0.5f, 
-         0.5f, -0.5f, -0.5f,  
-         0.5f, -0.5f,  0.5f,  
-         0.5f, -0.5f,  0.5f, 
-        -0.5f, -0.5f,  0.5f, 
-        -0.5f, -0.5f, -0.5f, 
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
 
-        -0.5f,  0.5f, -0.5f,  
-         0.5f,  0.5f, -0.5f, 
-         0.5f,  0.5f,  0.5f,  
-         0.5f,  0.5f,  0.5f,  
-        -0.5f,  0.5f,  0.5f, 
-        -0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
     };
 
+    //light source
 	glGenVertexArrays(1, &VAOlightCube);
     glGenBuffers(1, &VBOlightCube);
 
@@ -247,14 +249,32 @@ void Engine::initShape()
 	glBindBuffer(GL_ARRAY_BUFFER, VBOlightCube);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(lightCubeVertices), lightCubeVertices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+
+    //object cube
+	glGenVertexArrays(1, &VAOobject);
+	glBindVertexArray(VAOobject);
+	glBindBuffer(GL_ARRAY_BUFFER, VBOlightCube); // reuse the cube VBO
+    //position
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+    //normal
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+    //texture
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+
 }
 
 void Engine::initShader()
 {
     shader.loadShaderProgramFromFile(RESOURCES_PATH "vertex.vert", RESOURCES_PATH "fragment.frag");
 	lightCubeShader.loadShaderProgramFromFile(RESOURCES_PATH "lightCubeVertex.vert", RESOURCES_PATH "lightCubeFrag.frag");
+	objectShader.loadShaderProgramFromFile(RESOURCES_PATH "objectVertex.vert", RESOURCES_PATH "objectFrag.frag");
 }
 
 void Engine::initTexture()
@@ -291,7 +311,6 @@ void Engine::initTexture()
 
     //plane texture
     glGenTextures(1, &texture2);
-    glActiveTexture(GL_TEXTURE1); // <-- Use texture unit 1
     glBindTexture(GL_TEXTURE_2D, texture2);
 
     // Set texture wrapping/filtering options
@@ -309,6 +328,61 @@ void Engine::initTexture()
         GLenum format = (nrChannels2 == 4) ? GL_RGBA : GL_RGB;
         glTexImage2D(GL_TEXTURE_2D, 0, format, width2, height2, 0, format, GL_UNSIGNED_BYTE, data2);
         stbi_image_free(data2);
+    }
+    else
+    {
+        std::cout << "Failed to load second texture: " << stbi_failure_reason() << std::endl;
+    }
+
+
+
+    //cube texture
+    glGenTextures(1, &texture3);
+    glBindTexture(GL_TEXTURE_2D, texture3);
+
+    // Set texture wrapping/filtering options
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    // Load texture image
+    int width3, height3, nrChannels3;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* data3 = stbi_load(RESOURCES_PATH "container2.png", &width3, &height3, &nrChannels3, 0);
+    if (data3)
+    {
+        GLenum format = (nrChannels3 == 4) ? GL_RGBA : GL_RGB;
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width3, height3, 0, format, GL_UNSIGNED_BYTE, data3);
+        stbi_image_free(data3);
+    }
+    else
+    {
+        std::cout << "Failed to load second texture: " << stbi_failure_reason() << std::endl;
+    }
+
+
+
+
+    //cube texture
+    glGenTextures(1, &texture4);
+    glBindTexture(GL_TEXTURE_2D, texture4);
+
+    // Set texture wrapping/filtering options
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    // Load texture image
+    int width4, height4, nrChannels4;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* data4 = stbi_load(RESOURCES_PATH "container2_specular.png", &width4, &height4, &nrChannels4, 0);
+    if (data4)
+    {
+        GLenum format = (nrChannels4 == 4) ? GL_RGBA : GL_RGB;
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width4, height4, 0, format, GL_UNSIGNED_BYTE, data4);
+        stbi_image_free(data4);
     }
     else
     {
@@ -375,8 +449,19 @@ void Engine::drawShape()
     view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, target position, up vector
     glUniformMatrix4fv(shader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
 
-    glm::vec3 lightColor(0.8f, 0.8f, 0.8f);
-    glm::vec3 lightPos(1.2f, 3.0f, 1.0f);
+
+
+    //material
+    glm::vec3 materialAmbient(0.5f, 0.5f, 0.5f);
+    glm::vec3 materialDiffuse(0.5f, 0.5f, 0.5f);
+    glm::vec3 materialSpecular(0.5f, 0.5f, 0.5f);
+    float objectShininess = 32; //2, 4, 8, 16, 32, 64, 128, 256 (shine level)
+    //light
+    glm::vec3 lightAmbient(0.2f, 0.2f, 0.2f);
+    glm::vec3 lightDiffuse(0.5f, 0.5f, 0.5f);
+    glm::vec3 lightSpecular(1.0f, 1.0f, 1.0f);
+
+    glm::vec3 lightPos(0.f, 3.0f, 0.f);
 
     lightPos.x = sin(time) * radius;
     lightPos.y = 3.0f; // fixed height
@@ -407,9 +492,20 @@ void Engine::drawShape()
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.f, 0.51f, 0.f));
-    glUniform3f(shader.getUniform("lightColor"), lightColor[0], lightColor[1], lightColor[2]);
-    glUniform3fv(shader.getUniform("lightPosition"), 1, &lightPos[0]);
     glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
+    glUniform3fv(shader.getUniform("lightPosition"), 1, &lightPos[0]);
+	glUniform3fv(shader.getUniform("viewPosition"), 1, &cameraPos[0]);
+    
+    glUniform3fv(shader.getUniform("material.ambient"), 1, &materialAmbient[0]);
+    glUniform3fv(shader.getUniform("material.diffuse"), 1, &materialDiffuse[0]);
+    glUniform3fv(shader.getUniform("material.specular"), 1, &materialSpecular[0]);
+    glUniform1f(shader.getUniform("material.shininess"), objectShininess);
+
+    glUniform3fv(shader.getUniform("light.ambient"), 1, &lightAmbient[0]);
+    glUniform3fv(shader.getUniform("light.diffuse"), 1, &lightDiffuse[0]);
+    glUniform3fv(shader.getUniform("light.specular"), 1, &lightSpecular[0]);
+	
+    
     glDrawArrays(GL_TRIANGLES, 0, 36);
     
 
@@ -424,9 +520,19 @@ void Engine::drawShape()
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	model = glm::scale(model, glm::vec3(10.0f, 10.0f, 1.0f));
 	model = glm::translate(model, glm::vec3(0.f, 0.f, 0.f));
-    glUniform3f(shader.getUniform("lightColor"), lightColor[0], lightColor[1], lightColor[2]);
+    glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
 	glUniform3fv(shader.getUniform("lightPosition"), 1, &lightPos[0]);
-	glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
+    glUniform3fv(shader.getUniform("viewPosition"), 1, &cameraPos[0]);
+
+    glUniform3fv(shader.getUniform("material.ambient"), 1, &materialAmbient[0]);
+    glUniform3fv(shader.getUniform("material.diffuse"), 1, &materialDiffuse[0]);
+    glUniform3fv(shader.getUniform("material.specular"), 1, &materialSpecular[0]);
+    glUniform1f(shader.getUniform("material.shininess"), objectShininess);
+
+    glUniform3fv(shader.getUniform("light.ambient"), 1, &lightAmbient[0]);
+    glUniform3fv(shader.getUniform("light.diffuse"), 1, &lightDiffuse[0]);
+    glUniform3fv(shader.getUniform("light.specular"), 1, &lightSpecular[0]);
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
@@ -442,6 +548,52 @@ void Engine::drawShape()
 	model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
 	glUniformMatrix4fv(lightCubeShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+
+
+
+    //material
+    materialAmbient = glm::vec3(1.0f, 0.5f, 0.31f);
+    materialDiffuse = glm::vec3(1.0f, 0.5f, 0.31f);
+    materialSpecular = glm::vec3(0.5f, 0.5f, 0.5f);
+    objectShininess = 32; //2, 4, 8, 16, 32, 64, 128, 256 (shine level)
+
+    //light
+    lightAmbient = glm::vec3(0.2f, 0.2f, 0.2f);
+    lightDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+    lightSpecular = glm::vec3(1.f);
+
+	//object
+	glm::vec3 objectPos(2.f, 0.51f, 0.f);
+	
+
+	objectShader.bind();
+	glUniformMatrix4fv(objectShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+	glUniformMatrix4fv(objectShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
+
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, texture3);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, texture4);
+
+	glBindVertexArray(VAOobject);
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, objectPos);
+    glUniformMatrix4fv(objectShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
+	glUniform3fv(objectShader.getUniform("lightPosition"), 1, &lightPos[0]);
+	glUniform3fv(objectShader.getUniform("viewPosition"), 1, &cameraPos[0]);
+
+    glUniform1i(objectShader.getUniform("material.diffuse"), 2); //texture 3 = 2
+    glUniform1i(objectShader.getUniform("material.specular"), 3); //texture 4 = 3
+    glUniform1f(objectShader.getUniform("material.shininess"), objectShininess);
+
+	glUniform3fv(objectShader.getUniform("light.ambient"), 1, &lightAmbient[0]);
+    glUniform3fv(objectShader.getUniform("light.diffuse"), 1, &lightDiffuse[0]);
+    glUniform3fv(objectShader.getUniform("light.specular"), 1, &lightSpecular[0]);
+
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
 }
 
 void Engine::render() 

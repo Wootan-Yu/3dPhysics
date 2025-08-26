@@ -24,13 +24,18 @@ struct Engine {
 	GLFWwindow* window;
 	Shader shader;
 	Shader lightCubeShader;
+	Shader objectShader;
+
 	Camera camera;
 	float currentFrame = 0.0f;
 	GLuint VBOcube, VAOcube;
 	GLuint VBOplane, VAOplane;
 	GLuint VBOlightCube, VAOlightCube;
-	GLuint texture1;
-	GLuint texture2;
+	GLuint VAOobject;
+	GLuint texture1; //cube
+	GLuint texture2; //plane
+	GLuint texture3; //object cube
+	GLuint texture4; //object cube
 
 	Engine();
 	void init();

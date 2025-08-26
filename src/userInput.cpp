@@ -1,5 +1,5 @@
 #include "userInput.h"
-
+#include <iostream>
 void UserInput::mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
     if (firstMouse)

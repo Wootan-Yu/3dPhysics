@@ -10,11 +10,29 @@ uniform sampler2D texture1;
 uniform sampler2D texture2;
 uniform bool choice; // 0 = texture1, 1 = texture2
 
-//ambient light
-uniform vec3 lightColor;
-
-//diffuse light
 uniform vec3 lightPosition;
+uniform vec3 viewPosition;
+
+struct Material
+{
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
+};
+
+uniform Material material;
+
+
+struct Light {
+    vec3 position;
+  
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+uniform Light light;  
 
 void main()
 {
@@ -24,16 +42,23 @@ void main()
 	else
 		tex = texture(texture1, TexCoord);
 
-	float ambientStrength = 0.1;
-    vec3 ambient = ambientStrength * lightColor;
+	//apply Ambient lighting
+    vec3 ambient = material.ambient * light.ambient;
 
 	//apply diffuse lighting
 	vec3 norm = normalize(Normal);
 	vec3 lightDir = normalize(lightPosition - FragPos);  
 	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = diff * lightColor;
+	vec3 diffuse = (diff * material.diffuse) * light.diffuse;
 
-	vec3 result = (ambient + diffuse) * tex.rgb;
+	//apply specular lighting
+	vec3 viewDir = normalize(viewPosition - FragPos);
+	vec3 reflectDir = reflect(-lightDir, norm);  
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+	vec3 specular = (material.specular * spec) * light.specular;  
+
+
+	vec3 result = (ambient + diffuse + specular) * tex.rgb;
 
     // Final color with ambient lighting
     FragColor = vec4(result, tex.a);
