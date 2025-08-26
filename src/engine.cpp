@@ -462,9 +462,9 @@ void Engine::drawShape()
 
     glm::vec3 lightPos(0.f, 3.0f, 0.f);
 
-    lightPos.x = sin(time) * radius;
-    lightPos.y = 3.0f; // fixed height
-    lightPos.z = cos(time) * radius;
+    //lightPos.x = sin(time) * radius;
+    //lightPos.y = 3.0f; // fixed height
+    //lightPos.z = cos(time) * radius;
 
 	//cubes
     glUniform1i(shader.getUniform("choice"), 0); // set the texture unit 0 to texture1
@@ -563,6 +563,10 @@ void Engine::drawShape()
     lightDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
     lightSpecular = glm::vec3(1.f);
 
+    float constant = 1.f;
+    float linear = 0.09f;
+    float quadratic = 0.032f;
+
 	//object
 	glm::vec3 objectPos(2.f, 0.51f, 0.f);
 	
@@ -580,7 +584,7 @@ void Engine::drawShape()
     model = glm::mat4(1.0f);
     model = glm::translate(model, objectPos);
     glUniformMatrix4fv(objectShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
-	glUniform3fv(objectShader.getUniform("lightPosition"), 1, &lightPos[0]);
+	glUniform3fv(objectShader.getUniform("light.position"), 1, &lightPos[0]);
 	glUniform3fv(objectShader.getUniform("viewPosition"), 1, &cameraPos[0]);
 
     glUniform1i(objectShader.getUniform("material.diffuse"), 2); //texture 3 = 2
@@ -590,6 +594,10 @@ void Engine::drawShape()
 	glUniform3fv(objectShader.getUniform("light.ambient"), 1, &lightAmbient[0]);
     glUniform3fv(objectShader.getUniform("light.diffuse"), 1, &lightDiffuse[0]);
     glUniform3fv(objectShader.getUniform("light.specular"), 1, &lightSpecular[0]);
+
+    glUniform1f(objectShader.getUniform("light.constant"), constant);
+    glUniform1f(objectShader.getUniform("light.linear"), linear);
+    glUniform1f(objectShader.getUniform("light.quadratic"), quadratic);
 
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
