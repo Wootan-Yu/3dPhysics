@@ -450,7 +450,6 @@ void Engine::drawShape()
     glUniformMatrix4fv(shader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
 
 
-
     //material
     glm::vec3 materialAmbient(0.5f, 0.5f, 0.5f);
     glm::vec3 materialDiffuse(0.5f, 0.5f, 0.5f);
