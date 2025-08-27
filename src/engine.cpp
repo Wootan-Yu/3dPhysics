@@ -266,6 +266,11 @@ void Engine::initShape()
     //texture
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
+    
+
+
+    modelObject.loadModel(RESOURCES_PATH "backpack.obj");
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void Engine::initShader()
@@ -273,10 +278,12 @@ void Engine::initShader()
     shader.loadShaderProgramFromFile(RESOURCES_PATH "vertex.vert", RESOURCES_PATH "fragment.frag");
 	lightCubeShader.loadShaderProgramFromFile(RESOURCES_PATH "lightCubeVertex.vert", RESOURCES_PATH "lightCubeFrag.frag");
 	objectShader.loadShaderProgramFromFile(RESOURCES_PATH "objectVertex.vert", RESOURCES_PATH "objectFrag.frag");
+    modelShader.loadShaderProgramFromFile(RESOURCES_PATH "modelLoadvert.vert", RESOURCES_PATH "modelLoadfrag.frag");
 }
 
 void Engine::initTexture()
 {
+    
 	//blocks texture
     glGenTextures(1, &texture1);
     glBindTexture(GL_TEXTURE_2D, texture1); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
@@ -386,6 +393,7 @@ void Engine::initTexture()
     {
         std::cout << "Failed to load second texture: " << stbi_failure_reason() << std::endl;
     }
+    
 }
 
 void Engine::run()
@@ -435,6 +443,7 @@ void Engine::update()
 
 void Engine::drawShape()
 {
+    
     float time = glfwGetTime(); // seconds since program start
     static float radius = 5.0f;
 
@@ -535,7 +544,7 @@ void Engine::drawShape()
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
 
 
-
+    
     glm::mat4 model(1.0f);
 
     static const glm::vec3 pointLightPositions[4] = {
@@ -681,6 +690,19 @@ void Engine::drawShape()
     }
     
 
+    modelShader.bind();
+    // Setup view and projection for modelShader
+    glUniformMatrix4fv(modelShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+    glUniformMatrix4fv(modelShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
+
+    // Model matrix for the .obj model
+    glm::mat4 modelMatrix = glm::mat4(1.0f);
+    modelMatrix = glm::translate(modelMatrix, glm::vec3(5.0f, 0.0f, 0.0f));
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f)); // scale down if too big
+    glUniformMatrix4fv(modelShader.getUniform("model"), 1, GL_FALSE, &modelMatrix[0][0]);
+    
+    
+    modelObject.Draw(modelShader);
 }
 
 void Engine::render() 
@@ -697,7 +719,7 @@ void Engine::render()
     glViewport(0, 0, width, height);
 
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 

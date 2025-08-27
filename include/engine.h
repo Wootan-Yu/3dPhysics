@@ -20,11 +20,16 @@
 #include "userInput.h"
 #include "camera.h"
 
+#include "model.h"
+#include "mesh.h"
+
 struct Engine {
 	GLFWwindow* window;
 	Shader shader;
 	Shader lightCubeShader;
 	Shader objectShader;
+	Shader modelShader;
+	Model modelObject;
 
 	Camera camera;
 	float currentFrame = 0.0f;
