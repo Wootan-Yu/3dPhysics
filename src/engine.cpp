@@ -269,7 +269,8 @@ void Engine::initShape()
     
 
 
-    modelObject.loadModel(RESOURCES_PATH "backpack.obj");
+    //guitarBackpackModel.loadModel(RESOURCES_PATH "guitar_backpack/backpack.obj");
+    sponzaModel.loadModel(RESOURCES_PATH "Sponza/sponza.obj");
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
@@ -278,7 +279,8 @@ void Engine::initShader()
     shader.loadShaderProgramFromFile(RESOURCES_PATH "vertex.vert", RESOURCES_PATH "fragment.frag");
 	lightCubeShader.loadShaderProgramFromFile(RESOURCES_PATH "lightCubeVertex.vert", RESOURCES_PATH "lightCubeFrag.frag");
 	objectShader.loadShaderProgramFromFile(RESOURCES_PATH "objectVertex.vert", RESOURCES_PATH "objectFrag.frag");
-    modelShader.loadShaderProgramFromFile(RESOURCES_PATH "modelLoadvert.vert", RESOURCES_PATH "modelLoadfrag.frag");
+    //guitarBackpackShader.loadShaderProgramFromFile(RESOURCES_PATH "guitar_backpack/modelLoadvert.vert", RESOURCES_PATH "guitar_backpack/modelLoadfrag.frag");
+    sponzaShader.loadShaderProgramFromFile(RESOURCES_PATH "Sponza/modelVert.vert", RESOURCES_PATH "Sponza/modelFrag.frag");
 }
 
 void Engine::initTexture()
@@ -544,7 +546,7 @@ void Engine::drawShape()
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
 
 
-    
+    /*
     glm::mat4 model(1.0f);
 
     static const glm::vec3 pointLightPositions[4] = {
@@ -690,19 +692,34 @@ void Engine::drawShape()
     }
     
 
-    modelShader.bind();
+
+
+    guitarBackpackShader.bind();
     // Setup view and projection for modelShader
-    glUniformMatrix4fv(modelShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
-    glUniformMatrix4fv(modelShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
+    glUniformMatrix4fv(guitarBackpackShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+    glUniformMatrix4fv(guitarBackpackShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
 
     // Model matrix for the .obj model
-    glm::mat4 modelMatrix = glm::mat4(1.0f);
-    modelMatrix = glm::translate(modelMatrix, glm::vec3(5.0f, 0.0f, 0.0f));
-    modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f)); // scale down if too big
-    glUniformMatrix4fv(modelShader.getUniform("model"), 1, GL_FALSE, &modelMatrix[0][0]);
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(5.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(1.0f)); // scale down if too big
+    glUniformMatrix4fv(guitarBackpackShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
     
-    
-    modelObject.Draw(modelShader);
+    guitarBackpackModel.Draw(guitarBackpackShader);
+    */
+
+
+    sponzaShader.bind();
+    glUniformMatrix4fv(sponzaShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+    glUniformMatrix4fv(sponzaShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
+
+    // Model matrix for the .obj model
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.03f)); // scale down if too big
+    glUniformMatrix4fv(sponzaShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
+
+    sponzaModel.Draw(sponzaShader);
 }
 
 void Engine::render() 

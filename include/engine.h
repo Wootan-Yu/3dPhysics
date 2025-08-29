@@ -28,8 +28,12 @@ struct Engine {
 	Shader shader;
 	Shader lightCubeShader;
 	Shader objectShader;
-	Shader modelShader;
-	Model modelObject;
+
+	Shader guitarBackpackShader;
+	Model guitarBackpackModel;
+
+	Shader sponzaShader;
+	Model sponzaModel;
 
 	Camera camera;
 	float currentFrame = 0.0f;
