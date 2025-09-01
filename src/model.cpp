@@ -9,11 +9,17 @@ void Model::Draw(Shader& shader)
 void Model::loadModel(std::string path)
 {
     Assimp::Importer import;
-    const aiScene * scene = import.ReadFile(path, aiProcess_Triangulate);
+    //this is for .obj files
+    //const aiScene * scene = import.ReadFile(path, aiProcess_Triangulate); 
+
+    //this is for .gltf files
+    const aiScene * scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs); 
+    
     //aiProcess_Triangulate:  we tell Assimp that if the model does not (entirely)consist of triangles, it should transform all the model's primitive shapes to triangles first.
     
     //aiProcess_FlipUVs (DEFINITELY NOT NEEDED AND MUST BE DELETED), 
     // THIS COST ME HOURS TO DEBUG AND I JUST NEED TO REMOVE THIS CODE!!!!!!
+    // edit: this is used for .gltf files, this is definitely needed
     
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
@@ -95,9 +101,14 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     // 3. process material
     if (mesh->mMaterialIndex >= 0)
     {
+        //note: edit here the textures you want to render
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        //std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-        //textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        std::vector<Texture> emissiveMaps = loadMaterialTextures(material, aiTextureType_EMISSIVE, "texture_emissive");
+        textures.insert(textures.end(), emissiveMaps.begin(), emissiveMaps.end());
+        /*std::vector<Texture> metalRoughMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE_ROUGHNESS, "texture_metalRough");
+        textures.insert(textures.end(), metalRoughMaps.begin(), metalRoughMaps.end());*/
         /*std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());*/
     }

@@ -22,8 +22,7 @@ void Mesh::setupMesh()
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
-        &indices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
     // vertex positions
     glEnableVertexAttribArray(0);
@@ -42,6 +41,8 @@ void Mesh::Draw(Shader& shader)
 {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
+    unsigned int emissiveNr = 1;
+    unsigned int metalRoughNr = 1;
     for (unsigned int i = 0; i < textures.size(); i++)
     {
         glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
@@ -51,8 +52,13 @@ void Mesh::Draw(Shader& shader)
 
         if (name == "texture_diffuse")
             number = std::to_string(diffuseNr++);
+        else if (name == "texture_emissive")
+            number = std::to_string(emissiveNr++);
+        else if (name == "texture_metalRough")
+            number = std::to_string(metalRoughNr++);
         else if (name == "texture_specular")
             number = std::to_string(specularNr++);
+
         
         glUniform1i(shader.getUniform(std::string(name + number).c_str()), i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);

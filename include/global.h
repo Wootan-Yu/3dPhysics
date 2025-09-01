@@ -10,9 +10,9 @@ inline float rotationFactors[cubeCount];
 inline const unsigned int SCR_WIDTH = 1750;
 inline const unsigned int SCR_HEIGHT = 980;
 
-inline glm::vec3 cameraPos = glm::vec3(-0.0187399f, 2.27462f, 11.4832f);
+inline glm::vec3 cameraPos = glm::vec3(-0.0187399f, 2.27462f, 20.4832f);
 inline glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-inline glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+inline glm::vec3 cameraUp = glm::vec3(0.0f, 1.f, 0.0f);
 
 inline float deltaTime = 0.0f;	// Time between current frame and last frame
 inline float lastFrame = 0.0f; // Time of last frame

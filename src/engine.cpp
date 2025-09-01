@@ -5,6 +5,12 @@ Engine::Engine()
 	init();
 }
 
+Engine::~Engine()
+{
+    glDeleteVertexArrays(1, &VAOskybox);
+    glDeleteBuffers(1, &VBOskybox);
+}
+
 void Engine::init()
 {
     // glfw: initialize and configure
@@ -40,7 +46,8 @@ void Engine::init()
     }
 
     glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled by default)
-
+    glEnable(GL_CULL_FACE);
+    //glFrontFace(GL_CW);
 
 #pragma region report opengl errors to std
     glEnable(GL_DEBUG_OUTPUT);
@@ -52,6 +59,7 @@ void Engine::init()
 
 void Engine::initShape()
 {
+    /*
     float tileSize = 1.0f / 16.0f; // = 0.0625 (tileSize per texture)
     //side
     float sideTileX = 1; // column
@@ -151,10 +159,11 @@ void Engine::initShape()
 	// normal attribute
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
 	glEnableVertexAttribArray(2);
+    */
 
 
 
-
+    /*
     float planeVertices[] = {
 		// positions          // texture    // normals
          0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   0.0f, 0.0f, 1.0f, // top right
@@ -191,54 +200,64 @@ void Engine::initShape()
 
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
     glEnableVertexAttribArray(2);
+    */
 
 
 
 
+    /*
     float lightCubeVertices[] = {
         // positions          // normals           // texture coords
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+        // FRONT face (-Z)
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f, // Vertex 1
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f, // Vertex 2
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f, // Vertex 3
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f, // Vertex 4
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f, // Vertex 5
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f, // Vertex 6
 
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+        // BACK face (+Z)
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f, // Vertex 1
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f, // Vertex 2
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f, // Vertex 3
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f, // Vertex 4
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f, // Vertex 5
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f, // Vertex 6
 
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+        // LEFT face (-X)
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f, // Vertex 1
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f, // Vertex 2
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f, // Vertex 3
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f, // Vertex 4
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f, // Vertex 5
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f, // Vertex 6
 
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+        // RIGHT face (+X)
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, // Vertex 1
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, // Vertex 2
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f, // Vertex 3
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f, // Vertex 4
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f, // Vertex 5
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, // Vertex 6
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
+         // BOTTOM face (-Y)
+         -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f, // Vertex 1
+          0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f, // Vertex 2
+          0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f, // Vertex 3
+          0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f, // Vertex 4
+         -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f, // Vertex 5
+         -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f, // Vertex 6
+
+         // TOP face (+Y)
+         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Vertex 1
+          0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f, // Vertex 2
+          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f, // Vertex 3
+          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f, // Vertex 4
+         -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f, // Vertex 5
+         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f  // Vertex 6
     };
+
 
     //light source
 	glGenVertexArrays(1, &VAOlightCube);
@@ -266,26 +285,89 @@ void Engine::initShape()
     //texture
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
-    
+    */
+
+
+
+
+    //skybox cube
+    float skyboxVertices[] = {
+        // positions          
+        -1.0f,  1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+        -1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f
+    };
+    glGenVertexArrays(1, &VAOskybox);
+    glGenBuffers(1, &VBOskybox);
+
+    glBindVertexArray(VAOskybox);
+    glBindBuffer(GL_ARRAY_BUFFER, VBOskybox);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+
+    // position only, no other attributes, stride is 3 floats
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
 
 
     //guitarBackpackModel.loadModel(RESOURCES_PATH "guitar_backpack/backpack.obj");
-    sponzaModel.loadModel(RESOURCES_PATH "Sponza/sponza.obj");
+    //sponzaModel.loadModel(RESOURCES_PATH "Sponza/glTF/Sponza.gltf");
+    spaceHelmetModel.loadModel(RESOURCES_PATH "space_helmet/scene.gltf");
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void Engine::initShader()
 {
-    shader.loadShaderProgramFromFile(RESOURCES_PATH "vertex.vert", RESOURCES_PATH "fragment.frag");
-	lightCubeShader.loadShaderProgramFromFile(RESOURCES_PATH "lightCubeVertex.vert", RESOURCES_PATH "lightCubeFrag.frag");
-	objectShader.loadShaderProgramFromFile(RESOURCES_PATH "objectVertex.vert", RESOURCES_PATH "objectFrag.frag");
+    //shader.loadShaderProgramFromFile(RESOURCES_PATH "vertex.vert", RESOURCES_PATH "fragment.frag");
+	//lightCubeShader.loadShaderProgramFromFile(RESOURCES_PATH "lightCubeVertex.vert", RESOURCES_PATH "lightCubeFrag.frag");
+	//objectShader.loadShaderProgramFromFile(RESOURCES_PATH "objectVertex.vert", RESOURCES_PATH "objectFrag.frag");
     //guitarBackpackShader.loadShaderProgramFromFile(RESOURCES_PATH "guitar_backpack/modelLoadvert.vert", RESOURCES_PATH "guitar_backpack/modelLoadfrag.frag");
-    sponzaShader.loadShaderProgramFromFile(RESOURCES_PATH "Sponza/modelVert.vert", RESOURCES_PATH "Sponza/modelFrag.frag");
+    //sponzaShader.loadShaderProgramFromFile(RESOURCES_PATH "Sponza/modelVert.vert", RESOURCES_PATH "Sponza/modelFrag.frag");
+    spaceHelmetShader.loadShaderProgramFromFile(RESOURCES_PATH "space_helmet/modelVert.vert", RESOURCES_PATH "space_helmet/modelFrag.frag");
+    skyboxShader.loadShaderProgramFromFile(RESOURCES_PATH "skybox/vertShader.vert", RESOURCES_PATH "skybox/fragShader.frag");
 }
 
 void Engine::initTexture()
 {
-    
+    /*
 	//blocks texture
     glGenTextures(1, &texture1);
     glBindTexture(GL_TEXTURE_2D, texture1); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
@@ -313,9 +395,10 @@ void Engine::initTexture()
     {
         std::cout << "Failed to load texture: " << stbi_failure_reason() << std::endl;
     }
+    */
 
 
-
+    /*
     //plane texture
     glGenTextures(1, &texture2);
     glBindTexture(GL_TEXTURE_2D, texture2);
@@ -340,9 +423,10 @@ void Engine::initTexture()
     {
         std::cout << "Failed to load second texture: " << stbi_failure_reason() << std::endl;
     }
+    */
 
 
-
+    /*
     //cube texture
     glGenTextures(1, &texture3);
     glBindTexture(GL_TEXTURE_2D, texture3);
@@ -367,10 +451,10 @@ void Engine::initTexture()
     {
         std::cout << "Failed to load second texture: " << stbi_failure_reason() << std::endl;
     }
+    */
 
 
-
-
+    /*
     //cube texture
     glGenTextures(1, &texture4);
     glBindTexture(GL_TEXTURE_2D, texture4);
@@ -395,7 +479,21 @@ void Engine::initTexture()
     {
         std::cout << "Failed to load second texture: " << stbi_failure_reason() << std::endl;
     }
+    */
     
+    std::string directory = "C:/Users/Wootan/Desktop/github_files/Wootan-Yu/3dPhysics/resources/skybox/";
+
+    //cube map texture
+    std::vector<std::string> faces
+    {
+        directory + "right.jpg",
+        directory + "left.jpg",
+        directory + "top.jpg",
+        directory + "bottom.jpg",
+        directory + "front.jpg",
+        directory + "back.jpg"
+    };
+    textureCubeMap = loadCubemap(faces);
 }
 
 void Engine::run()
@@ -446,18 +544,18 @@ void Engine::update()
 void Engine::drawShape()
 {
     
-    float time = glfwGetTime(); // seconds since program start
-    static float radius = 5.0f;
+    //float time = glfwGetTime(); // seconds since program start
+    //static float radius = 5.0f;
 
-    shader.bind();
+    //shader.bind();
     //projection matrix
-    glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-    glUniformMatrix4fv(shader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+    //glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    //glUniformMatrix4fv(shader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
 
-    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, target position, up vector
-    glUniformMatrix4fv(shader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
+    //glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, target position, up vector
+    //glUniformMatrix4fv(shader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
 
-    
+    /*
     //material
     static glm::vec3 materialAmbient(0.5f, 0.5f, 0.5f);
     static glm::vec3 materialDiffuse(0.5f, 0.5f, 0.5f);
@@ -474,7 +572,7 @@ void Engine::drawShape()
     //lightPos.y = 3.0f; // fixed height
     //lightPos.z = cos(time) * radius;
 
-    /*
+    
 	//cubes
     glUniform1i(shader.getUniform("choice"), 0); // set the bool to 0
     glActiveTexture(GL_TEXTURE0);
@@ -546,8 +644,8 @@ void Engine::drawShape()
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
 
 
-    /*
-    glm::mat4 model(1.0f);
+    
+    /*glm::mat4 model(1.0f);
 
     static const glm::vec3 pointLightPositions[4] = {
         glm::vec3(0.7f,  0.2f,  2.0f),
@@ -690,10 +788,11 @@ void Engine::drawShape()
         glUniformMatrix4fv(objectShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
+    */
     
 
 
-
+    /*
     guitarBackpackShader.bind();
     // Setup view and projection for modelShader
     glUniformMatrix4fv(guitarBackpackShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
@@ -708,9 +807,12 @@ void Engine::drawShape()
     guitarBackpackModel.Draw(guitarBackpackShader);
     */
 
-
+    /*
     sponzaShader.bind();
+    glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     glUniformMatrix4fv(sponzaShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+
+    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, target position, up vector
     glUniformMatrix4fv(sponzaShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
 
     // Model matrix for the .obj model
@@ -720,6 +822,62 @@ void Engine::drawShape()
     glUniformMatrix4fv(sponzaShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
 
     sponzaModel.Draw(sponzaShader);
+    */
+
+    float time = glfwGetTime();
+    float radius = 10.0f;
+    float speed = 0.5f;
+    float angle = time * speed;
+
+    cameraPos.x = sin(angle) * radius;
+    cameraPos.z = cos(angle) * radius;
+    cameraPos.y = 5.0f; // Optional
+
+    cameraFront = glm::normalize(glm::vec3(0.0f, 0.0f, 0.0f) - cameraPos); // Looking at origin
+    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+
+    spaceHelmetShader.bind();
+    
+    glUniformMatrix4fv(spaceHelmetShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+    glUniformMatrix4fv(spaceHelmetShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
+
+    // Model matrix for the .obj model
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::rotate(model, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(3.f)); // scale down if too big
+    glUniformMatrix4fv(spaceHelmetShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
+    glUniform3fv(spaceHelmetShader.getUniform("cameraPos"), 1, &cameraPos[0]);
+    spaceHelmetModel.Draw(spaceHelmetShader);
+    
+
+
+
+    //note: to give us a slight performance boost we're going to render the skybox LAST. 
+    // This way, the depth buffer is completely filled with all the scene's depth values 
+    // so we only have to render the skybox's fragments wherever the early depth test passes, 
+    // greatly reducing the number of fragment shader calls.
+
+    glDepthFunc(GL_LEQUAL);  // Use "less than or equal" instead of default "less than" 
+
+    skyboxShader.bind();
+    glBindVertexArray(VAOskybox);
+    glDepthMask(GL_FALSE); // Don't write to depth buffer (skybox should always be in background)
+
+    glUniformMatrix4fv(skyboxShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+
+    //MUST remove translation from camera view
+    //If you use full glm::lookAt(...), the skybox cube will "move" and appear small
+    view = glm::mat4(glm::mat3(view)); 
+    glUniformMatrix4fv(skyboxShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureCubeMap);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    glDepthMask(GL_TRUE);   // Re-enable depth writing
+    glDepthFunc(GL_LESS);   // Restore default depth function
+
 }
 
 void Engine::render() 

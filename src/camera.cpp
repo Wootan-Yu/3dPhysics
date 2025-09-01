@@ -1,9 +1,9 @@
 #include "camera.h"
 
 Camera::Camera()
-	: position(0.0f, 0.0f, 3.0f),
-	viewDirection(0.0f, 0.0f, -1.0f),
-	up(0.0f, 1.0f, 0.0f),
+	: position(0.f,0.f,0.f),
+	viewDirection(0.0f, 0.0f, 0.0f),
+	up(0.0f, 0.0f, 0.0f),
 	strafeDirection(0.f, 0.f, 0.f)
 {
 

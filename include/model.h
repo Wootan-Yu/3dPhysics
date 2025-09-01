@@ -12,6 +12,7 @@ class Model
 {
 public:
     std::vector<Texture> textures_loaded;
+    
     Model() = default;
     Model(char* path)
     {
