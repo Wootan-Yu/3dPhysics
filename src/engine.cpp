@@ -350,61 +350,9 @@ void Engine::initShape()
 
     //guitarBackpackModel.loadModel(RESOURCES_PATH "guitar_backpack/backpack.obj");
     //sponzaModel.loadModel(RESOURCES_PATH "Sponza/glTF/Sponza.gltf");
-    //spaceHelmetModel.loadModel_gltf(RESOURCES_PATH "space_helmet/scene.gltf");
-    planetModel.loadModel_obj(RESOURCES_PATH "outerSpace/planet/planet.obj");
-    asteroidModel.loadModel_obj(RESOURCES_PATH "outerSpace/rock/rock.obj");
+    spaceHelmetModel.loadModel_gltf(RESOURCES_PATH "space_helmet/scene.gltf");
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-
-
-    // Outside render loop, once during initialization:
-    asteroidOffsets.reserve(amount);
-    asteroidScales.reserve(amount);
-    asteroidBaseAngles.reserve(amount);
-
-    modelMatrices = new glm::mat4[amount];
-
-    srand((unsigned int)glfwGetTime());
-    for (unsigned int i = 0; i < amount; i++) {
-        float angle = (float)i / (float)amount * 360.0f;
-        float displacementX = ((rand() % (int)(2 * offset * 100)) / 100.0f) - offset;
-        float displacementY = ((rand() % (int)(2 * offset * 100)) / 100.0f) - offset;
-        float displacementZ = ((rand() % (int)(2 * offset * 100)) / 100.0f) - offset;
-
-        asteroidOffsets[i] = glm::vec3(displacementX, displacementY * 0.4f, displacementZ);
-        asteroidScales[i] = ((rand() % 20) / 100.0f) + 0.05f;
-        asteroidBaseAngles[i] = angle;
-    }
-
-
-
-
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
-
-    for (unsigned int i = 0; i < asteroidModel.meshes.size(); i++)
-    {
-        unsigned int VAO = asteroidModel.meshes[i].VAO;
-        glBindVertexArray(VAO);
-        // vertex attributes
-        std::size_t vec4Size = sizeof(glm::vec4);
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
-        glEnableVertexAttribArray(4);
-        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
-        glEnableVertexAttribArray(5);
-        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
-        glEnableVertexAttribArray(6);
-        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
-
-        glVertexAttribDivisor(3, 1);
-        glVertexAttribDivisor(4, 1);
-        glVertexAttribDivisor(5, 1);
-        glVertexAttribDivisor(6, 1);
-
-        glBindVertexArray(0);
-    }
 }
 
 void Engine::initShader()
@@ -414,9 +362,7 @@ void Engine::initShader()
 	//objectShader.loadShaderProgramFromFile(RESOURCES_PATH "objectVertex.vert", RESOURCES_PATH "objectFrag.frag");
     //guitarBackpackShader.loadShaderProgramFromFile(RESOURCES_PATH "guitar_backpack/modelLoadvert.vert", RESOURCES_PATH "guitar_backpack/modelLoadfrag.frag");
     //sponzaShader.loadShaderProgramFromFile(RESOURCES_PATH "Sponza/modelVert.vert", RESOURCES_PATH "Sponza/modelFrag.frag");
-    //spaceHelmetShader.loadShaderProgramFromFile(RESOURCES_PATH "space_helmet/modelVert.vert", RESOURCES_PATH "space_helmet/modelFrag.frag");
-    planetShader.loadShaderProgramFromFile(RESOURCES_PATH "outerSpace/planet/planetVert.vert", RESOURCES_PATH "outerSpace/planet/planetFrag.frag");
-    asteroidShader.loadShaderProgramFromFile(RESOURCES_PATH "outerSpace/rock/rockVert.vert", RESOURCES_PATH "outerSpace/rock/rockFrag.frag");
+    spaceHelmetShader.loadShaderProgramFromFile(RESOURCES_PATH "space_helmet/modelVert.vert", RESOURCES_PATH "space_helmet/modelFrag.frag");
     skyboxShader.loadShaderProgramFromFile(RESOURCES_PATH "skybox/vertShader.vert", RESOURCES_PATH "skybox/fragShader.frag");
 }
 
@@ -536,10 +482,10 @@ void Engine::initTexture()
     }
     */
     
-    std::string directory = "C:/Users/Wootan/Desktop/github_files/Wootan-Yu/3dPhysics/resources/skybox/blue/";
+    std::string directory = "C:/Users/Wootan/Desktop/github_files/Wootan-Yu/3dPhysics/resources/skybox/";
 
     //cube map texture
-    /*std::vector<std::string> faces
+    std::vector<std::string> faces
     {
         directory + "right.jpg",
         directory + "left.jpg",
@@ -547,16 +493,6 @@ void Engine::initTexture()
         directory + "bottom.jpg",
         directory + "front.jpg",
         directory + "back.jpg"
-    };*/
-
-    std::vector<std::string> faces
-    {
-        directory + "bkg1_right.png",
-        directory + "bkg1_left.png",
-        directory + "bkg1_top.png",
-        directory + "bkg1_bot.png",
-        directory + "bkg1_front.png",
-        directory + "bkg1_back.png"
     };
 
     textureCubeMap = loadCubemap(faces);
@@ -894,7 +830,7 @@ void Engine::drawShape()
     */
 
 
-    /*
+    
     float time = glfwGetTime();
     float radius = 10.0f;
     float speed = 0.5f;
@@ -921,76 +857,6 @@ void Engine::drawShape()
     glUniformMatrix4fv(spaceHelmetShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
     glUniform3fv(spaceHelmetShader.getUniform("cameraPos"), 1, &cameraPos[0]);
     spaceHelmetModel.Draw(spaceHelmetShader);
-    */
-
-
-
-    float time = glfwGetTime(); // current time in seconds
-    float rotationSpeed = 10.0f; // degrees per second, tweak this
-
-    float angle = time * rotationSpeed; // degrees
-    
-    planetShader.bind();
-    glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 300.0f);
-    glUniformMatrix4fv(planetShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
-
-    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, target position, up vector
-    glUniformMatrix4fv(planetShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
-
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-angle), glm::vec3(1.f, 1.f, 0.f));
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(4.0f)); // scale down if too big
-    glUniformMatrix4fv(planetShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
-
-    planetModel.Draw(planetShader);
-    
-
-
-
-
-
-    //1. Update modelMatrices with new orbiting positions
-    rotationSpeed = 5.0f; // degrees/sec or tweak to your liking
-
-    for (unsigned int i = 0; i < amount; i++) {
-        glm::mat4 model = glm::mat4(1.0f);
-
-        float angle = asteroidBaseAngles[i] + time * rotationSpeed;
-        float rad = glm::radians(angle);
-
-        float x = sin(rad) * radius + asteroidOffsets[i].x;
-        float y = asteroidOffsets[i].y;
-        float z = cos(rad) * radius + asteroidOffsets[i].z;
-
-        model = glm::translate(model, glm::vec3(x, y, z));
-        model = glm::scale(model, glm::vec3(asteroidScales[i]));
-
-        // Optional: spin each asteroid
-        model = glm::rotate(model, rad * 2.0f, glm::vec3(0.4f, 0.6f, 0.8f));
-
-        modelMatrices[i] = model;
-    }
-
-
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, amount * sizeof(glm::mat4), &modelMatrices[0]);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    asteroidShader.bind();
-    glUniformMatrix4fv(asteroidShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
-    glUniformMatrix4fv(asteroidShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
-
-    glUniform1i(asteroidShader.getUniform("texture_diffuse1"), 0);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, asteroidModel.textures_loaded[0].id);
-
-    for (int i = 0; i < asteroidModel.meshes.size(); i++)
-    {
-        glBindVertexArray(asteroidModel.meshes[i].VAO);
-        glDrawElementsInstanced(GL_TRIANGLES, asteroidModel.meshes[i].indices.size(), GL_UNSIGNED_INT, 0, amount);
-        glBindVertexArray(0);
-    }
     
 
 
