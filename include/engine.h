@@ -39,6 +39,18 @@ struct Engine {
 	Shader spaceHelmetShader;
 	Model spaceHelmetModel;
 
+	Shader planetShader;
+	Model planetModel;
+
+	Shader asteroidShader;
+	Model asteroidModel;
+
+	glm::mat4* modelMatrices;
+	std::vector<glm::vec3> asteroidOffsets;
+	std::vector<float> asteroidScales;
+	std::vector<float> asteroidBaseAngles;
+	unsigned int buffer;
+
 	Camera camera;
 	float currentFrame = 0.0f;
 	GLuint VBOcube, VAOcube;

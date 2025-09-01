@@ -12,19 +12,21 @@ class Model
 {
 public:
     std::vector<Texture> textures_loaded;
+    std::vector<Mesh> meshes;
     
+
     Model() = default;
     Model(char* path)
     {
-        loadModel(path);
+        loadModel_gltf(path);
+        loadModel_obj(path);
     }
     void Draw(Shader& shader);
-    void loadModel(std::string path);
-private:
-    // model data
-    std::vector<Mesh> meshes;
-    std::string directory;
+    void loadModel_gltf(std::string path);
+    void loadModel_obj(std::string path);
 
+private:
+    std::string directory;
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
@@ -34,7 +36,9 @@ private:
 inline unsigned int TextureFromFile(const char* path, const std::string& directory)
 {
     std::string filename = std::string(path);
-    filename = directory + '/' + filename;
+    if (!directory.empty())
+        filename = directory + '/' + filename;
+
     std::cout << filename << '\n';
 
 

@@ -6,11 +6,9 @@ void Model::Draw(Shader& shader)
 		meshes[i].Draw(shader);
 }
 
-void Model::loadModel(std::string path)
+void Model::loadModel_gltf(std::string path)
 {
     Assimp::Importer import;
-    //this is for .obj files
-    //const aiScene * scene = import.ReadFile(path, aiProcess_Triangulate); 
 
     //this is for .gltf files
     const aiScene * scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs); 
@@ -21,6 +19,29 @@ void Model::loadModel(std::string path)
     // THIS COST ME HOURS TO DEBUG AND I JUST NEED TO REMOVE THIS CODE!!!!!!
     // edit: this is used for .gltf files, this is definitely needed
     
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+    {
+        std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+        return;
+    }
+    directory = path.substr(0, path.find_last_of('/'));
+    std::cout << directory << '\n';
+
+    processNode(scene->mRootNode, scene);
+}
+
+void Model::loadModel_obj(std::string path)
+{
+    Assimp::Importer import;
+    //this is for .obj files
+    const aiScene * scene = import.ReadFile(path, aiProcess_Triangulate); 
+
+    //aiProcess_Triangulate:  we tell Assimp that if the model does not (entirely)consist of triangles, it should transform all the model's primitive shapes to triangles first.
+
+    //aiProcess_FlipUVs (DEFINITELY NOT NEEDED AND MUST BE DELETED), 
+    // THIS COST ME HOURS TO DEBUG AND I JUST NEED TO REMOVE THIS CODE!!!!!!
+    // edit: this is used for .gltf files, this is definitely needed
+
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
@@ -105,8 +126,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
         std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        std::vector<Texture> emissiveMaps = loadMaterialTextures(material, aiTextureType_EMISSIVE, "texture_emissive");
-        textures.insert(textures.end(), emissiveMaps.begin(), emissiveMaps.end());
+        /*std::vector<Texture> emissiveMaps = loadMaterialTextures(material, aiTextureType_EMISSIVE, "texture_emissive");
+        textures.insert(textures.end(), emissiveMaps.begin(), emissiveMaps.end());*/
         /*std::vector<Texture> metalRoughMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE_ROUGHNESS, "texture_metalRough");
         textures.insert(textures.end(), metalRoughMaps.begin(), metalRoughMaps.end());*/
         /*std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
@@ -136,9 +157,10 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
         if (!skip)
         {   // if texture hasn't been loaded already, load it
             Texture texture;
-            texture.id = TextureFromFile(str.C_Str(), directory);
+            std::string fullPath = directory + '/' + std::string(str.C_Str());
+            texture.id = TextureFromFile(fullPath.c_str(), ""); // pass empty string for directory
             texture.type = typeName;
-            texture.path = str.C_Str();
+            texture.path = fullPath;
             textures.push_back(texture);
             textures_loaded.push_back(texture); // add to loaded textures
         }
