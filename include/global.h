@@ -10,8 +10,8 @@ inline float rotationFactors[cubeCount];
 inline const unsigned int SCR_WIDTH = 1750;
 inline const unsigned int SCR_HEIGHT = 980;
 
-inline glm::vec3 cameraPos = glm::vec3(-86.531, 15.1862, 115.995);  // -0.0187399f, 2.27462f, 20.4832f
-inline glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+inline glm::vec3 cameraPos = glm::vec3(0.0f, 5.0f, 20.0f);  // -0.0187399f, 2.27462f, 20.4832f
+inline glm::vec3 cameraFront = glm::vec3(0.0f, -0.2f, -1.0f);
 inline glm::vec3 cameraUp = glm::vec3(0.0f, 1.f, 0.0f);
 
 inline float deltaTime = 0.0f;	// Time between current frame and last frame
@@ -24,7 +24,7 @@ inline float pitch = 0.0f; // pitch is initialized to 0.0 degrees, so the camera
 
 inline float fov = 45.0f; // field of view
 
-inline float speed = 10000.f; // camera speed
+inline float speed = 150.f; // camera speed
 
 
 inline unsigned int amount = 100'000; //no. of asteroids

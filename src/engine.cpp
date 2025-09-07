@@ -47,7 +47,7 @@ void Engine::init()
 
     glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled by default)
     glEnable(GL_CULL_FACE);
-    //glFrontFace(GL_CW);
+    glEnable(GL_FRAMEBUFFER_SRGB); //enable gamma correction
 
 #pragma region report opengl errors to std
     glEnable(GL_DEBUG_OUTPUT);
@@ -163,19 +163,19 @@ void Engine::initShape()
 
 
 
-    /*
+    
     float planeVertices[] = {
-		// positions          // texture    // normals
+		 // positions          // texture    // normals
          0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   0.0f, 0.0f, 1.0f, // top right
          0.5f, -0.5f, 0.0f,   1.0f, 0.0f,   0.0f, 0.0f, 1.0f, // bottom right
         -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,   0.0f, 0.0f, 1.0f, // bottom left
         -0.5f,  0.5f, 0.0f,   0.0f, 1.0f,   0.0f, 0.0f, 1.0f, // top left 
     };
 
-	unsigned int planeIndices[] = {
-		0, 1, 3,   // first triangle
-		1, 2, 3    // second triangle
-	};
+    unsigned int planeIndices[] = {
+        0, 3, 1,   // first triangle
+        1, 3, 2    // second triangle
+    };
 
     GLuint EBO;
 
@@ -191,7 +191,7 @@ void Engine::initShape()
 	glGenBuffers(1, &EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(planeIndices), planeIndices, GL_STATIC_DRAW);
-    
+ 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
@@ -200,7 +200,7 @@ void Engine::initShape()
 
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
     glEnableVertexAttribArray(2);
-    */
+    
 
 
 
@@ -357,7 +357,7 @@ void Engine::initShape()
 
 void Engine::initShader()
 {
-    //shader.loadShaderProgramFromFile(RESOURCES_PATH "vertex.vert", RESOURCES_PATH "fragment.frag");
+    shader.loadShaderProgramFromFile(RESOURCES_PATH "vertex.vert", RESOURCES_PATH "fragment.frag");
 	//lightCubeShader.loadShaderProgramFromFile(RESOURCES_PATH "lightCubeVertex.vert", RESOURCES_PATH "lightCubeFrag.frag");
 	//objectShader.loadShaderProgramFromFile(RESOURCES_PATH "objectVertex.vert", RESOURCES_PATH "objectFrag.frag");
     //guitarBackpackShader.loadShaderProgramFromFile(RESOURCES_PATH "guitar_backpack/modelLoadvert.vert", RESOURCES_PATH "guitar_backpack/modelLoadfrag.frag");
@@ -399,7 +399,7 @@ void Engine::initTexture()
     */
 
 
-    /*
+    
     //plane texture
     glGenTextures(1, &texture2);
     glBindTexture(GL_TEXTURE_2D, texture2);
@@ -413,18 +413,18 @@ void Engine::initTexture()
     // Load texture image
     int width2, height2, nrChannels2;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char* data2 = stbi_load(RESOURCES_PATH "wall.jpg", &width2, &height2, &nrChannels2, 0);
+    unsigned char* data2 = stbi_load(RESOURCES_PATH "wood.png", &width2, &height2, &nrChannels2, 0);
     if (data2)
     {
-        GLenum format = (nrChannels2 == 4) ? GL_RGBA : GL_RGB;
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width2, height2, 0, format, GL_UNSIGNED_BYTE, data2);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB, width2, height2, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
         stbi_image_free(data2);
     }
     else
     {
         std::cout << "Failed to load second texture: " << stbi_failure_reason() << std::endl;
     }
-    */
+    
+    
 
 
     /*
@@ -558,25 +558,9 @@ void Engine::drawShape()
 
     //glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, target position, up vector
     //glUniformMatrix4fv(shader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
+    
 
     /*
-    //material
-    static glm::vec3 materialAmbient(0.5f, 0.5f, 0.5f);
-    static glm::vec3 materialDiffuse(0.5f, 0.5f, 0.5f);
-    static glm::vec3 materialSpecular(0.5f, 0.5f, 0.5f);
-    static float objectShininess = 32; //2, 4, 8, 16, 32, 64, 128, 256 (shine level)
-    //light
-    static glm::vec3 lightAmbient(0.2f, 0.2f, 0.2f);
-    static glm::vec3 lightDiffuse(0.5f, 0.5f, 0.5f);
-    static glm::vec3 lightSpecular(1.0f, 1.0f, 1.0f);
-
-    static glm::vec3 lightPos(0.f, 3.0f, 0.f);
-
-    //lightPos.x = sin(time) * radius;
-    //lightPos.y = 3.0f; // fixed height
-    //lightPos.z = cos(time) * radius;
-
-    
 	//cubes
     glUniform1i(shader.getUniform("choice"), 0); // set the bool to 0
     glActiveTexture(GL_TEXTURE0);
@@ -603,7 +587,8 @@ void Engine::drawShape()
         }
     }*/
 
-    /*static glm::mat4 model = glm::mat4(1.0f);
+    /*
+    static glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.f, 0.51f, 0.f));
     glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
     glUniform3fv(shader.getUniform("lightPosition"), 1, &lightPos[0]);
@@ -618,23 +603,46 @@ void Engine::drawShape()
     glUniform3fv(shader.getUniform("light.diffuse"), 1, &lightDiffuse[0]);
     glUniform3fv(shader.getUniform("light.specular"), 1, &lightSpecular[0]);
 	
-    
     glDrawArrays(GL_TRIANGLES, 0, 36);
+    */
+
     
+    //material
+    static glm::vec3 materialAmbient(0.5f, 0.5f, 0.5f);
+    static glm::vec3 materialDiffuse(0.5f, 0.5f, 0.5f);
+    static glm::vec3 materialSpecular(1.f, 1.f, 1.f);
+    static float objectShininess = 32; //2, 4, 8, 16, 32, 64, 128, 256 (shine level)
+    //light
+    static glm::vec3 lightAmbient(0.2f, 0.2f, 0.2f);
+    static glm::vec3 lightDiffuse(1.0f, 1.0f, 0.6f); // brighter yellow
+    static glm::vec3 lightSpecular(1.0f, 1.0f, 1.0f);
+
+    static glm::vec3 lightPos(0.f, 3.0f, 0.f);
 
     //plane
+    shader.bind();
+    //projection matrix
+    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, target position, up vector
+    glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 45.0f);
+    
+
+    glUniformMatrix4fv(shader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+    glUniformMatrix4fv(shader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
+
     glUniform1i(shader.getUniform("choice"), 1); //set the bool to 1
     glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, texture2);
     glUniform1i(shader.getUniform("texture2"), 1); // set the texture unit 1 to texture2
 
 	glBindVertexArray(VAOplane);
-    model = glm::mat4(1.0f);
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.f, -4.f, 0.f));
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(10.0f, 10.0f, 1.0f));
-	model = glm::translate(model, glm::vec3(0.f, 0.f, 0.f));
+	model = glm::scale(model, glm::vec3(20.0f, 20.0f, 1.0f));
+	
     glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
-	glUniform3fv(shader.getUniform("lightPosition"), 1, &lightPos[0]);
+	glUniform3fv(shader.getUniform("light.position"), 1, &lightPos[0]);
     glUniform3fv(shader.getUniform("viewPosition"), 1, &cameraPos[0]);
 
     glUniform3fv(shader.getUniform("material.ambient"), 1, &materialAmbient[0]);
@@ -646,8 +654,8 @@ void Engine::drawShape()
     glUniform3fv(shader.getUniform("light.diffuse"), 1, &lightDiffuse[0]);
     glUniform3fv(shader.getUniform("light.specular"), 1, &lightSpecular[0]);
 
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
-
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    
 
     
     /*glm::mat4 model(1.0f);
@@ -830,19 +838,21 @@ void Engine::drawShape()
     */
 
 
+
+
     
-    float time = glfwGetTime();
-    float radius = 10.0f;
-    float speed = 0.5f;
-    float angle = time * speed;
 
-    cameraPos.x = sin(angle) * radius;
-    cameraPos.z = cos(angle) * radius;
-    cameraPos.y = 5.0f; // Optional
+    static glm::vec3 helmetMaterialAmbient(1.0f);
+    static glm::vec3 helmetMaterialDiffuse = glm::vec3(1.0f);
+    static glm::vec3 helmetMaterialSpecular = glm::vec3(0.2);
+    static float helmetObjectShininess = 128; //2, 4, 8, 16, 32, 64, 128, 256 (shine level)
 
-    cameraFront = glm::normalize(glm::vec3(0.0f, 0.0f, 0.0f) - cameraPos); // Looking at origin
-    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-    glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    //light
+    static glm::vec3 helmetLightAmbient = glm::vec3(0.2f, 0.2f, 0.2f);
+    static glm::vec3 helmetLightDiffuse = glm::vec3(1.0f, 1.0f, 1.0f);
+    static glm::vec3 helmetLightSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
+
+    static glm::vec3 helmetLightPos = glm::vec3(0.f, 3.0f, 0.f);
 
     spaceHelmetShader.bind();
     
@@ -850,12 +860,26 @@ void Engine::drawShape()
     glUniformMatrix4fv(spaceHelmetShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
 
     // Model matrix for the .obj model
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(3.f)); // scale down if too big
-    glUniformMatrix4fv(spaceHelmetShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
-    glUniform3fv(spaceHelmetShader.getUniform("cameraPos"), 1, &cameraPos[0]);
+    glm::mat4 modelHelm = glm::mat4(1.0f);
+    modelHelm = glm::rotate(modelHelm, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+    modelHelm = glm::translate(modelHelm, glm::vec3(0.0f, 0.0f, 0.0f));
+    modelHelm = glm::scale(modelHelm, glm::vec3(3.f)); // scale down if too big
+    glUniformMatrix4fv(spaceHelmetShader.getUniform("model"), 1, GL_FALSE, &modelHelm[0][0]);
+    
+    
+    glUniform3fv(spaceHelmetShader.getUniform("viewPosition"), 1, &cameraPos[0]);
+    glUniform3fv(spaceHelmetShader.getUniform("light.position"), 1, &helmetLightPos[0]);
+
+    glUniform3fv(spaceHelmetShader.getUniform("material.ambient"), 1, &helmetMaterialAmbient[0]);
+    glUniform3fv(spaceHelmetShader.getUniform("material.diffuse"), 1, &helmetMaterialDiffuse[0]);
+    glUniform3fv(spaceHelmetShader.getUniform("material.specular"), 1, &helmetMaterialSpecular[0]);
+    glUniform1f(spaceHelmetShader.getUniform("material.shininess"), helmetObjectShininess);
+
+    glUniform3fv(spaceHelmetShader.getUniform("light.ambient"), 1, &helmetLightAmbient[0]);
+    glUniform3fv(spaceHelmetShader.getUniform("light.diffuse"), 1, &helmetLightDiffuse[0]);
+    glUniform3fv(spaceHelmetShader.getUniform("light.specular"), 1, &helmetLightSpecular[0]);
+
+
     spaceHelmetModel.Draw(spaceHelmetShader);
     
 
@@ -879,8 +903,8 @@ void Engine::drawShape()
 
     //MUST remove translation from camera view
     //If you use full glm::lookAt(...), the skybox cube will "move" and appear small
-    view = glm::mat4(glm::mat3(view)); 
-    glUniformMatrix4fv(skyboxShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
+    glm::mat4 skyboxView = glm::mat4(glm::mat3(view)); 
+    glUniformMatrix4fv(skyboxShader.getUniform("view"), 1, GL_FALSE, &skyboxView[0][0]);
 
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureCubeMap);
     glDrawArrays(GL_TRIANGLES, 0, 36);

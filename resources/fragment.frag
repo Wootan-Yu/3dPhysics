@@ -10,7 +10,6 @@ uniform sampler2D texture1;
 uniform sampler2D texture2;
 uniform bool choice; // 0 = texture1, 1 = texture2
 
-uniform vec3 lightPosition;
 uniform vec3 viewPosition;
 
 struct Material
@@ -47,15 +46,16 @@ void main()
 
 	//apply diffuse lighting
 	vec3 norm = normalize(Normal);
-	vec3 lightDir = normalize(lightPosition - FragPos);  
+	vec3 lightDir = normalize(light.position - FragPos);  
 	float diff = max(dot(norm, lightDir), 0.0);
 	vec3 diffuse = (diff * material.diffuse) * light.diffuse;
 
-	//apply specular lighting
+	//apply specular lighting, Blinn-Phong
 	vec3 viewDir = normalize(viewPosition - FragPos);
-	vec3 reflectDir = reflect(-lightDir, norm);  
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = (material.specular * spec) * light.specular;  
+	vec3 halfwayDir = normalize(lightDir + viewDir);
+
+	float spec = pow(max(dot(norm, halfwayDir), 0.0), material.shininess);
+	vec3 specular = material.specular * spec * light.specular;
 
 
 	vec3 result = (ambient + diffuse + specular) * tex.rgb;
