@@ -49,6 +49,9 @@ void Engine::init()
     glEnable(GL_CULL_FACE);
     glEnable(GL_FRAMEBUFFER_SRGB); //enable gamma correction
 
+
+    
+
 #pragma region report opengl errors to std
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -59,111 +62,6 @@ void Engine::init()
 
 void Engine::initShape()
 {
-    /*
-    float tileSize = 1.0f / 16.0f; // = 0.0625 (tileSize per texture)
-    //side
-    float sideTileX = 1; // column
-    float sideTileY = 0; // row
-
-    float uMin = sideTileX * tileSize;
-    float vMin = sideTileY * tileSize;
-    float uMax = uMin + tileSize;
-    float vMax = vMin + tileSize;
-
-    //top
-    float topTileX = 0; // column
-    float topTileY = 0; // row
-
-    float uTopMin = topTileX * tileSize;
-    float vTopMin = topTileY * tileSize;
-    float uTopMax = uTopMin + tileSize;
-    float vTopMax = vTopMin + tileSize;
-
-    //bottom
-    float bottomTileX = 2; // column
-    float bottomTileY = 0; // row
-
-    float uBottomMin = bottomTileX * tileSize;
-    float vBottomMin = bottomTileY * tileSize;
-    float uBottomMax = uBottomMin + tileSize;
-    float vBottomMax = vBottomMin + tileSize;
-
-
-
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
-    float cubeVertices[] = {
-        // FRONT face (-Z), top-down mapped (X-Z)
-        -0.5f, -0.5f, -0.5f,  uMin, vMax, 0.0f,  0.0f, -1.0f,
-         0.5f, -0.5f, -0.5f,  uMax, vMax, 0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  uMax, vMin, 0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  uMax, vMin, 0.0f,  0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f,  uMin, vMin, 0.0f,  0.0f, -1.0f,
-        -0.5f, -0.5f, -0.5f,  uMin, vMax, 0.0f,  0.0f, -1.0f,
-
-        // BACK face (+Z), top-down mapped (X-Z)
-        -0.5f, -0.5f,  0.5f,  uMin, vMax, 0.0f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  uMax, vMax, 0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  uMax, vMin, 0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  uMax, vMin, 0.0f,  0.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  uMin, vMin, 0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  uMin, vMax, 0.0f,  0.0f, 1.0f,
-
-        // TOP face (+Y), standard top-down (X-Z)
-        -0.5f,  0.5f, -0.5f,  uTopMin, vTopMax, 0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  uTopMax, vTopMax, 0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  uTopMax, vTopMin, 0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  uTopMax, vTopMin, 0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  uTopMin, vTopMin, 0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  uTopMin, vTopMax, 0.0f,  1.0f,  0.0f,
-
-        // BOTTOM face (-Y), top-down mapped (X-Z)
-        -0.5f, -0.5f, -0.5f,  uBottomMin, vBottomMax, 0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  uBottomMax, vBottomMax, 0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  uBottomMax, vBottomMin, 0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  uBottomMax, vBottomMin, 0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  uBottomMin, vBottomMin, 0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  uBottomMin, vBottomMax, 0.0f, -1.0f,  0.0f,
-
-        // LEFT face (-X), top-down mapped (X-Z)
-        -0.5f, -0.5f, -0.5f,  uMin, vMax, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  uMax, vMax, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  uMax, vMin, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  uMax, vMin, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  uMin, vMin, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  uMin, vMax, -1.0f,  0.0f,  0.0f,
-
-        // RIGHT face (+X), top-down mapped (X-Z)
-         0.5f, -0.5f, -0.5f,  uMin, vMax, 1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  uMax, vMax, 1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  uMax, vMin, 1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  uMax, vMin, 1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  uMin, vMin, 1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  uMin, vMax, 1.0f,  0.0f,  0.0f,
-    };
-
-    glGenVertexArrays(1, &VAOcube);
-    glGenBuffers(1, &VBOcube);
-
-    glBindVertexArray(VAOcube);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBOcube);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
-
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // texture coord attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-	// normal attribute
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
-	glEnableVertexAttribArray(2);
-    */
-
-
-
-    
     float planeVertices[] = {
 		 // positions          // texture    // normals
          0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   0.0f, 0.0f, 1.0f, // top right
@@ -177,7 +75,7 @@ void Engine::initShape()
         1, 3, 2    // second triangle
     };
 
-    GLuint EBO;
+    GLuint planeEBO;
 
 	glGenVertexArrays(1, &VAOplane);
 	glGenBuffers(1, &VBOplane);
@@ -188,8 +86,8 @@ void Engine::initShape()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), planeVertices, GL_STATIC_DRAW);
 
 
-	glGenBuffers(1, &EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glGenBuffers(1, &planeEBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(planeIndices), planeIndices, GL_STATIC_DRAW);
  
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
@@ -205,88 +103,134 @@ void Engine::initShape()
 
 
 
-    /*
-    float lightCubeVertices[] = {
-        // positions          // normals           // texture coords
-
-        // FRONT face (-Z)
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f, // Vertex 1
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f, // Vertex 2
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f, // Vertex 3
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f, // Vertex 4
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f, // Vertex 5
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f, // Vertex 6
-
-        // BACK face (+Z)
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f, // Vertex 1
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f, // Vertex 2
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f, // Vertex 3
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f, // Vertex 4
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f, // Vertex 5
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f, // Vertex 6
-
-        // LEFT face (-X)
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f, // Vertex 1
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f, // Vertex 2
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f, // Vertex 3
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f, // Vertex 4
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f, // Vertex 5
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f, // Vertex 6
-
-        // RIGHT face (+X)
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, // Vertex 1
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, // Vertex 2
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f, // Vertex 3
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f, // Vertex 4
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f, // Vertex 5
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, // Vertex 6
-
-         // BOTTOM face (-Y)
-         -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f, // Vertex 1
-          0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f, // Vertex 2
-          0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f, // Vertex 3
-          0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f, // Vertex 4
-         -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f, // Vertex 5
-         -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f, // Vertex 6
-
-         // TOP face (+Y)
-         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Vertex 1
-          0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f, // Vertex 2
-          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f, // Vertex 3
-          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f, // Vertex 4
-         -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f, // Vertex 5
-         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f  // Vertex 6
+    float physicsCubeVertices[] = {
+        // Back face
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right         
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+        // Front face
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+        // Left face
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
+        // Right face
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right         
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left     
+         // Bottom face
+         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+          0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left
+          0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
+          0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
+         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
+         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+         // Top face
+         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+          0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+          0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right     
+          0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+         -0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left        
     };
 
+    unsigned int VBOPhysicsCube;
 
-    //light source
-	glGenVertexArrays(1, &VAOlightCube);
-    glGenBuffers(1, &VBOlightCube);
+    glGenVertexArrays(1, &VAOPhysicsCube);
+    glGenBuffers(1, &VBOPhysicsCube);
 
-	glBindVertexArray(VAOlightCube);
+    glBindVertexArray(VAOPhysicsCube);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBOlightCube);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(lightCubeVertices), lightCubeVertices, GL_STATIC_DRAW);
+    // Vertex buffer
+    glBindBuffer(GL_ARRAY_BUFFER, VBOPhysicsCube);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(physicsCubeVertices), physicsCubeVertices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // Texture coordinate attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
 
-    //object cube
-	glGenVertexArrays(1, &VAOobject);
-	glBindVertexArray(VAOobject);
-	glBindBuffer(GL_ARRAY_BUFFER, VBOlightCube); // reuse the cube VBO
-    //position
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-    //normal
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-    //texture
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-    */
 
+    //physics cube wireframe
+    float cubeEdges[] = {
+        // Bottom face edges
+        -0.5f, -0.5f, -0.5f,   0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,   0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,  -0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,  -0.5f, -0.5f, -0.5f,
+         
+        // Top face edges
+        -0.5f,  0.5f, -0.5f,   0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,   0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,  -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,  -0.5f,  0.5f, -0.5f,
+
+        // Vertical edges
+        -0.5f, -0.5f, -0.5f,  -0.5f,  0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,   0.5f,  0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,   0.5f,  0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,  -0.5f,  0.5f,  0.5f,
+    };
+
+    unsigned int VBOOutline;
+    glGenVertexArrays(1, &VAOOutline);
+    glGenBuffers(1, &VBOOutline);
+
+    glBindVertexArray(VAOOutline);
+    glBindBuffer(GL_ARRAY_BUFFER, VBOOutline);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeEdges), cubeEdges, GL_STATIC_DRAW);
+
+    // position only
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
+
+
+    
+    //sphere
+    sphereObject = generateSphere(1.0f, 64, 32); // radius = 1.0, resolution
+
+    GLuint VBOsphere, EBOsphere;
+    glGenVertexArrays(1, &VAOsphere);
+    glGenBuffers(1, &VBOsphere);
+    glGenBuffers(1, &EBOsphere);
+
+    glBindVertexArray(VAOsphere);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBOsphere);
+    glBufferData(GL_ARRAY_BUFFER, sphereObject.vertices.size() * sizeof(float), sphereObject.vertices.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOsphere);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereObject.indices.size() * sizeof(unsigned int), sphereObject.indices.data(), GL_STATIC_DRAW);
+
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // Normal attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    glBindVertexArray(0);
+    
 
 
 
@@ -335,6 +279,7 @@ void Engine::initShape()
         -1.0f, -1.0f,  1.0f,
          1.0f, -1.0f,  1.0f
     };
+
     glGenVertexArrays(1, &VAOskybox);
     glGenBuffers(1, &VBOskybox);
 
@@ -345,24 +290,109 @@ void Engine::initShape()
     // position only, no other attributes, stride is 3 floats
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+}
+
+void Engine::initPhysics()
+{
+    // 1) Basic allocator + factory
+    JPH::RegisterDefaultAllocator();
+    JPH::Factory::sInstance = new JPH::Factory();
+
+    // 2) Register Jolt built-in types (CRITICAL)
+    JPH::RegisterTypes();
+
+    // 4) Layer/filter objects (keep these alive for lifetime of physicsSystem)
+    static BPLayerInterfaceImpl broadPhaseLayerInterface;
+    static ObjectVsBroadPhaseLayerFilterImpl objVsBpFilter;
+    static ObjectLayerPairFilterImpl objPairFilter;
+
+    // 5) Init physics system
+    physicsSystem.Init(
+        1024, // max bodies
+        0,    // num body mutexes
+        1024, // max body pairs
+        1024, // max contacts
+        broadPhaseLayerInterface,
+        objVsBpFilter,
+        objPairFilter);
+
+    // 6) Store body interface
+    bodyInterface = &physicsSystem.GetBodyInterface();
+    physicsSystem.SetGravity(JPH::Vec3(0, -2.f, 0)); // gentle gravity
+
+
+    //sphere
+    JPH::SphereShapeSettings sphereSettings(1.0);
+    JPH::ShapeRefC sphereShape = sphereSettings.Create().Get();
+
+    JPH::BodyCreationSettings ballSettings(
+        sphereShape,
+        JPH::RVec3(0.f, 15.f, 0.f),
+        JPH::Quat::sIdentity(),
+        JPH::EMotionType::Dynamic,           // movable body
+        Layers::MOVING                       // your object layer
+    );
+
+    ballSettings.mMassPropertiesOverride.mMass = 10.f; // lighter = falls slower (but still gravity applies)
+    ballSettings.mLinearDamping = 0.9f; // slows velocity each tick
+    ballSettings.mRestitution = 1.f;
+
+    sphereBodyID = bodyInterface->CreateAndAddBody(ballSettings, JPH::EActivation::Activate);
 
 
 
-    //guitarBackpackModel.loadModel(RESOURCES_PATH "guitar_backpack/backpack.obj");
-    //sponzaModel.loadModel(RESOURCES_PATH "Sponza/glTF/Sponza.gltf");
-    spaceHelmetModel.loadModel_gltf(RESOURCES_PATH "space_helmet/scene.gltf");
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //cube
+    JPH::BoxShapeSettings boxSettings(JPH::Vec3(0.5f, 0.5f, 0.5f)); // 1x1x1 cube
+    JPH::ShapeRefC cubeShape = boxSettings.Create().Get();
 
+    JPH::BodyCreationSettings cubeSettings(
+        cubeShape,
+        JPH::RVec3(0.0f, 20.0f, 0.0f),        // <-- initial position (y = 5 units above ground)
+        JPH::Quat::sIdentity(),              // no rotation
+        JPH::EMotionType::Dynamic,           // movable body
+        Layers::MOVING                       // your object layer
+    );
+
+    cubeSettings.mMotionType = JPH::EMotionType::Dynamic;
+    cubeSettings.mOverrideMassProperties = JPH::EOverrideMassProperties::CalculateInertia;
+    cubeSettings.mMassPropertiesOverride.mMass = 5.f; // lighter = falls slower (but still gravity applies)
+    cubeSettings.mLinearDamping = 0.9f; // slows velocity each tick
+    cubeSettings.mRestitution = 0.8f;
+
+    cubeBodyID = bodyInterface->CreateAndAddBody(cubeSettings, JPH::EActivation::Activate);
+
+
+
+    //plane
+    // Create an infinite plane (normal pointing up, passing through origin)
+    JPH::Plane plane(JPH::Vec3(0, 1, 0), 0.0f);
+    JPH::PlaneShapeSettings planeSettings(plane); // y=0 plane
+
+    // Create the shape
+    JPH::ShapeRefC planeShape = planeSettings.Create().Get();
+
+    JPH::BodyCreationSettings floorSettings(
+        planeShape,
+        JPH::RVec3::sZero(),                  // at origin
+        JPH::Quat::sIdentity(),
+        JPH::EMotionType::Static,             // immovable
+        Layers::NON_MOVING
+    );
+
+    JPH::BodyID floorID = bodyInterface->CreateAndAddBody(floorSettings, JPH::EActivation::DontActivate);
 }
 
 void Engine::initShader()
 {
     shader.loadShaderProgramFromFile(RESOURCES_PATH "vertex.vert", RESOURCES_PATH "fragment.frag");
-	//lightCubeShader.loadShaderProgramFromFile(RESOURCES_PATH "lightCubeVertex.vert", RESOURCES_PATH "lightCubeFrag.frag");
+    physicsCubeShader.loadShaderProgramFromFile(RESOURCES_PATH "physicsCubeVert.vert", RESOURCES_PATH "physicsCubeFrag.frag");
+    outlineShader.loadShaderProgramFromFile(RESOURCES_PATH "outlineVert.vert", RESOURCES_PATH "outlineFrag.frag");
+    sphereShader.loadShaderProgramFromFile(RESOURCES_PATH "sphereVert.vert", RESOURCES_PATH "sphereFrag.frag");
+    //lightCubeShader.loadShaderProgramFromFile(RESOURCES_PATH "lightCubeVertex.vert", RESOURCES_PATH "lightCubeFrag.frag");
 	//objectShader.loadShaderProgramFromFile(RESOURCES_PATH "objectVertex.vert", RESOURCES_PATH "objectFrag.frag");
     //guitarBackpackShader.loadShaderProgramFromFile(RESOURCES_PATH "guitar_backpack/modelLoadvert.vert", RESOURCES_PATH "guitar_backpack/modelLoadfrag.frag");
     //sponzaShader.loadShaderProgramFromFile(RESOURCES_PATH "Sponza/modelVert.vert", RESOURCES_PATH "Sponza/modelFrag.frag");
-    spaceHelmetShader.loadShaderProgramFromFile(RESOURCES_PATH "space_helmet/modelVert.vert", RESOURCES_PATH "space_helmet/modelFrag.frag");
+    //spaceHelmetShader.loadShaderProgramFromFile(RESOURCES_PATH "space_helmet/modelVert.vert", RESOURCES_PATH "space_helmet/modelFrag.frag");
     skyboxShader.loadShaderProgramFromFile(RESOURCES_PATH "skybox/vertShader.vert", RESOURCES_PATH "skybox/fragShader.frag");
 }
 
@@ -427,7 +457,7 @@ void Engine::initTexture()
     
 
 
-    /*
+    
     //cube texture
     glGenTextures(1, &texture3);
     glBindTexture(GL_TEXTURE_2D, texture3);
@@ -444,15 +474,16 @@ void Engine::initTexture()
     unsigned char* data3 = stbi_load(RESOURCES_PATH "container2.png", &width3, &height3, &nrChannels3, 0);
     if (data3)
     {
-        GLenum format = (nrChannels3 == 4) ? GL_RGBA : GL_RGB;
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width3, height3, 0, format, GL_UNSIGNED_BYTE, data3);
-        stbi_image_free(data3);
+        GLenum internalFormat = (nrChannels3 == 4) ? GL_SRGB_ALPHA : GL_SRGB;
+        GLenum dataFormat = (nrChannels3 == 4) ? GL_RGBA : GL_RGB;
+
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width3, height3, 0, dataFormat, GL_UNSIGNED_BYTE, data3);
     }
     else
     {
         std::cout << "Failed to load second texture: " << stbi_failure_reason() << std::endl;
     }
-    */
+    
 
 
     /*
@@ -479,8 +510,8 @@ void Engine::initTexture()
     else
     {
         std::cout << "Failed to load second texture: " << stbi_failure_reason() << std::endl;
-    }
-    */
+    }*/
+    
     
     std::string directory = "C:/Users/Wootan/Desktop/github_files/Wootan-Yu/3dPhysics/resources/skybox/";
 
@@ -501,6 +532,7 @@ void Engine::initTexture()
 void Engine::run()
 {
     initShape();
+    initPhysics(); //physics
     initShader();
     initTexture();
 	processInput(); //mouse, cursor and scroll input
@@ -536,77 +568,52 @@ void Engine::keyInput()
         cameraPos.y += cameraSpeed; // move up
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
         cameraPos.y -= cameraSpeed; // move down
+    if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
+    {
+        // Move cube back to (0, 20, 0) with no rotation, zero velocity
+        bodyInterface->SetPositionAndRotation(
+            cubeBodyID,
+            JPH::RVec3(0.0f, 20.0f, 0.0f),
+            JPH::Quat::sIdentity(),
+            JPH::EActivation::Activate
+        );
+    }
+    if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
+    {
+        // Move cube back to (0, 20, 0) with no rotation, zero velocity
+        bodyInterface->SetPositionAndRotation(
+            sphereBodyID,
+            JPH::RVec3(0.0f, 15.0f, 0.0f),
+            JPH::Quat::sIdentity(),
+            JPH::EActivation::Activate
+        );
+    }
+
 
     //std::cout << cameraPos.x << ", " << cameraPos.y << ", " << cameraPos.z << '\n';
 }
 
 void Engine::update()
 {
+    // Create temporary memory allocator and job system
+    static JPH::TempAllocatorImpl tempAllocator(10 * 1024 * 1024);
+    static JPH::JobSystemThreadPool jobSystem(JPH::cMaxPhysicsJobs, JPH::cMaxPhysicsBarriers, std::thread::hardware_concurrency() - 1);
 
+    // Step physics
+    physicsSystem.Update(1.0f / 60.0f, 1, &tempAllocator, &jobSystem);
+
+    // Fetch cube transform
+    JPH::RMat44 cube = bodyInterface->GetCenterOfMassTransform(cubeBodyID);
+    cube.StoreFloat4x4((JPH::Float4*)cubeMat);  // reinterpret as float[16]
+    cubeModel = glm::make_mat4(cubeMat);
+
+    JPH::RMat44 sphere = bodyInterface->GetCenterOfMassTransform(sphereBodyID);
+    sphere.StoreFloat4x4((JPH::Float4*)sphereMat);
+    sphereModel = glm::make_mat4(sphereMat);
 }
 
 void Engine::drawShape()
 {
-    
-    //float time = glfwGetTime(); // seconds since program start
-    //static float radius = 5.0f;
-
-    //shader.bind();
-    //projection matrix
-    //glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-    //glUniformMatrix4fv(shader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
-
-    //glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, target position, up vector
-    //glUniformMatrix4fv(shader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
-    
-
-    /*
-	//cubes
-    glUniform1i(shader.getUniform("choice"), 0); // set the bool to 0
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    glUniform1i(shader.getUniform("texture1"), 0); // set the texture unit 0 to texture1
-
-    glBindVertexArray(VAOcube);
-    */
-
-
-    /*for (uint16_t x = 0; x < cubeCount; x++)
-    {
-        for (uint16_t y = 0; y < cubeCount; y++)
-        {
-            for (uint16_t z = 0; z < cubeCount; z++)
-            {
-                glm::mat4 model = glm::mat4(1.0f);
-                model = glm::translate(model, glm::vec3(x, y + 0.51f, z));
-				glUniform3f(shader.getUniform("lightColor"), lightColor[0], lightColor[1], lightColor[2]);
-                glUniform3fv(shader.getUniform("lightposition"), 1, &lightPos[0]);
-                glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
-                glDrawArrays(GL_TRIANGLES, 0, 36);
-            }
-        }
-    }*/
-
-    /*
-    static glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.f, 0.51f, 0.f));
-    glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
-    glUniform3fv(shader.getUniform("lightPosition"), 1, &lightPos[0]);
-	glUniform3fv(shader.getUniform("viewPosition"), 1, &cameraPos[0]);
-    
-    glUniform3fv(shader.getUniform("material.ambient"), 1, &materialAmbient[0]);
-    glUniform3fv(shader.getUniform("material.diffuse"), 1, &materialDiffuse[0]);
-    glUniform3fv(shader.getUniform("material.specular"), 1, &materialSpecular[0]);
-    glUniform1f(shader.getUniform("material.shininess"), objectShininess);
-
-    glUniform3fv(shader.getUniform("light.ambient"), 1, &lightAmbient[0]);
-    glUniform3fv(shader.getUniform("light.diffuse"), 1, &lightDiffuse[0]);
-    glUniform3fv(shader.getUniform("light.specular"), 1, &lightSpecular[0]);
-	
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    */
-
-    
     //material
     static glm::vec3 materialAmbient(0.5f, 0.5f, 0.5f);
     static glm::vec3 materialDiffuse(0.5f, 0.5f, 0.5f);
@@ -637,7 +644,7 @@ void Engine::drawShape()
 	glBindVertexArray(VAOplane);
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.f, -4.f, 0.f));
+    model = glm::translate(model, glm::vec3(0.f, 0.f, 0.f));
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	model = glm::scale(model, glm::vec3(20.0f, 20.0f, 1.0f));
 	
@@ -658,241 +665,94 @@ void Engine::drawShape()
     
 
     
-    /*glm::mat4 model(1.0f);
-
-    static const glm::vec3 pointLightPositions[4] = {
-        glm::vec3(0.7f,  0.2f,  2.0f),
-        glm::vec3(2.3f, -3.3f, -4.0f),
-        glm::vec3(-4.0f,  2.0f, -12.0f),
-        glm::vec3(0.0f,  0.0f, -3.0f)
-    };
 
 
-    // positions all containers
-    static const glm::vec3 cubePositions[] = {
-        glm::vec3(0.0f,  0.0f,  0.0f),
-        glm::vec3(2.0f,  5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3(2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f,  3.0f, -7.5f),
-        glm::vec3(1.3f, -2.0f, -2.5f),
-        glm::vec3(1.5f,  2.0f, -2.5f),
-        glm::vec3(1.5f,  0.2f, -1.5f),
-        glm::vec3(-1.3f,  1.0f, -1.5f)
-    };
+    //physics cubes
+    physicsCubeShader.bind();
+    glUniformMatrix4fv(physicsCubeShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+    glUniformMatrix4fv(physicsCubeShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
 
-    glm::vec3 pointLightColors[] = {
-    glm::vec3(1.0f, 0.5f, 0.0f), // Orange
-    glm::vec3(1.0f, 0.0f, 0.0f), // Red
-    glm::vec3(0.0f, 1.0f, 0.0f), // Green
-    glm::vec3(0.0f, 0.0f, 1.0f)  // Blue
-    };
-
-    //light source
-    lightCubeShader.bind();
-    glUniformMatrix4fv(lightCubeShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
-    glUniformMatrix4fv(lightCubeShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
-	
-	glBindVertexArray(VAOlightCube);
-    for (uint8_t i = 0; i < 4; i++) //these are for the 4 random lights
-    {
-        model = glm::mat4(1.0f);
-	    model = glm::translate(model, pointLightPositions[i]);
-	    model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-        glUniform3fv(lightCubeShader.getUniform("color"), 1, &pointLightColors[i][0]);
-	    glUniformMatrix4fv(lightCubeShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
-	    glDrawArrays(GL_TRIANGLES, 0, 36);
-    }
-	
-
-
-
-
-    //material
-    materialDiffuse = glm::vec3(1.0f, 0.5f, 0.31f);
-    materialSpecular = glm::vec3(0.5f, 0.5f, 0.5f);
-    objectShininess = 32; //2, 4, 8, 16, 32, 64, 128, 256 (shine level)
-
-    static float constant = 1.f;
-    static float linear = 0.09f;
-    static float quadratic = 0.032f;
-
-	//object
-    static glm::vec3 objectPos(2.f, 0.51f, 0.f);
-	
-
-	objectShader.bind();
-	glUniformMatrix4fv(objectShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
-	glUniformMatrix4fv(objectShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
 
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, texture3);
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, texture4);
+    glUniform1i(physicsCubeShader.getUniform("texture1"), 2); // set the texture unit 0 to texture1
 
-	glBindVertexArray(VAOobject);
     
-	glUniform3fv(objectShader.getUniform("viewPosition"), 1, &cameraPos[0]);
+    //outline
+    outlineShader.bind();
+    glUniformMatrix4fv(outlineShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+    glUniformMatrix4fv(outlineShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
 
-    glUniform1i(objectShader.getUniform("material.diffuse"), 2); //texture 3 = 2
-    glUniform1i(objectShader.getUniform("material.specular"), 3); //texture 4 = 3
-    glUniform1f(objectShader.getUniform("material.shininess"), objectShininess);
-
-    glUniform3f(objectShader.getUniform("dirLight.direction"), -0.2f, -1.0f, -0.3f);
-    glUniform3f(objectShader.getUniform("dirLight.ambient"), 0.05f, 0.05f, 0.05f);
-    glUniform3f(objectShader.getUniform("dirLight.diffuse"), 0.4f, 0.4f, 0.4f);
-    glUniform3f(objectShader.getUniform("dirLight.specular"), 0.5f, 0.5f, 0.5f);
-
-    // Orange light
-    glUniform3fv(objectShader.getUniform("pointLights[0].position"), 1, &pointLightPositions[0][0]);
-    glUniform3f(objectShader.getUniform("pointLights[0].ambient"), 0.05f, 0.025f, 0.0f);
-    glUniform3f(objectShader.getUniform("pointLights[0].diffuse"), 1.0f, 0.5f, 0.0f);
-    glUniform3f(objectShader.getUniform("pointLights[0].specular"), 1.0f, 1.0f, 1.0f);
-    glUniform1f(objectShader.getUniform("pointLights[0].constant"), 1.0f);
-    glUniform1f(objectShader.getUniform("pointLights[0].linear"), 0.09f);
-    glUniform1f(objectShader.getUniform("pointLights[0].quadratic"), 0.032f);
-
-    // Red light
-    glUniform3fv(objectShader.getUniform("pointLights[1].position"), 1, &pointLightPositions[1][0]);
-    glUniform3f(objectShader.getUniform("pointLights[1].ambient"), 0.05f, 0.01f, 0.01f);
-    glUniform3f(objectShader.getUniform("pointLights[1].diffuse"), 1.0f, 0.0f, 0.0f);
-    glUniform3f(objectShader.getUniform("pointLights[1].specular"), 1.0f, 1.0f, 1.0f);
-    glUniform1f(objectShader.getUniform("pointLights[1].constant"), 1.0f);
-    glUniform1f(objectShader.getUniform("pointLights[1].linear"), 0.09f);
-    glUniform1f(objectShader.getUniform("pointLights[1].quadratic"), 0.032f);
-
-    // Green light
-    glUniform3fv(objectShader.getUniform("pointLights[2].position"), 1, &pointLightPositions[2][0]);
-    glUniform3f(objectShader.getUniform("pointLights[2].ambient"), 0.01f, 0.05f, 0.01f);
-    glUniform3f(objectShader.getUniform("pointLights[2].diffuse"), 0.0f, 1.0f, 0.0f);
-    glUniform3f(objectShader.getUniform("pointLights[2].specular"), 1.0f, 1.0f, 1.0f);
-    glUniform1f(objectShader.getUniform("pointLights[2].constant"), 1.0f);
-    glUniform1f(objectShader.getUniform("pointLights[2].linear"), 0.09f);
-    glUniform1f(objectShader.getUniform("pointLights[2].quadratic"), 0.032f);
-
-    // Blue light
-    glUniform3fv(objectShader.getUniform("pointLights[3].position"), 1, &pointLightPositions[3][0]);
-    glUniform3f(objectShader.getUniform("pointLights[3].ambient"), 0.01f, 0.01f, 0.05f);
-    glUniform3f(objectShader.getUniform("pointLights[3].diffuse"), 0.0f, 0.0f, 1.0f);
-    glUniform3f(objectShader.getUniform("pointLights[3].specular"), 1.0f, 1.0f, 1.0f);
-    glUniform1f(objectShader.getUniform("pointLights[3].constant"), 1.0f);
-    glUniform1f(objectShader.getUniform("pointLights[3].linear"), 0.09f);
-    glUniform1f(objectShader.getUniform("pointLights[3].quadratic"), 0.032f);
+    static glm::vec3 lineColor(1.f, 1.f, 1.f);
 
 
-    glUniform3fv(objectShader.getUniform("spotLight.position"), 1, &cameraPos[0]);
-    glUniform3fv(objectShader.getUniform("spotLight.direction"), 1, &cameraFront[0]);
-    glUniform3f(objectShader.getUniform("spotLight.ambient"), 0.0f, 0.0f, 0.0f);
-    glUniform3f(objectShader.getUniform("spotLight.diffuse"), 1.0f, 1.0f, 1.0f);
-    glUniform3f(objectShader.getUniform("spotLight.specular"), 1.0f, 1.0f, 1.0f);
-    glUniform1f(objectShader.getUniform("spotLight.constant"), 1.0f);
-    glUniform1f(objectShader.getUniform("spotLight.linear"), 0.09f);
-    glUniform1f(objectShader.getUniform("spotLight.quadratic"), 0.032f);
-    glUniform1f(objectShader.getUniform("spotLight.cutOff"), glm::cos(glm::radians(12.5f)));
-    glUniform1f(objectShader.getUniform("spotLight.outerCutOff"), glm::cos(glm::radians(12.5f)));
+    // 1. Draw solid cube
+    physicsCubeShader.bind();
+    glBindVertexArray(VAOPhysicsCube);
+    glUniformMatrix4fv(physicsCubeShader.getUniform("model"), 1, GL_FALSE, &cubeModel[0][0]);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 
-    for (uint8_t i = 0; i < 10; i++)
+    // 2. Draw outline
+    outlineShader.bind();
+    glBindVertexArray(VAOOutline);
+    glUniformMatrix4fv(outlineShader.getUniform("model"), 1, GL_FALSE, &cubeModel[0][0]);
+    glUniform3fv(outlineShader.getUniform("lineColor"), 1, &lineColor[0]);
+    glLineWidth(2.0f);
+    glDrawArrays(GL_LINES, 0, 24);
+
+    /*
+    for (uint16_t x = 0; x < cubeCount; x++)
     {
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, cubePositions[i]);
-        float angle = 20.0f * i;
-        model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-        glUniformMatrix4fv(objectShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-    }
-    */
-    
+        for (uint16_t y = 0; y < cubeCount; y++)
+        {
+            for (uint16_t z = 0; z < cubeCount; z++)
+            {
+                // 1. Draw solid cube
+                physicsCubeShader.bind();
+                glBindVertexArray(VAOPhysicsCube);
+                model = glm::mat4(1.0f);
+                model = glm::translate(model, glm::vec3(x, y + 0.51f, z));
+                glUniformMatrix4fv(physicsCubeShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
+                glDrawArrays(GL_TRIANGLES, 0, 36);
 
-
-    /*
-    guitarBackpackShader.bind();
-    // Setup view and projection for modelShader
-    glUniformMatrix4fv(guitarBackpackShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
-    glUniformMatrix4fv(guitarBackpackShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
-
-    // Model matrix for the .obj model
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(5.0f, 0.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(1.0f)); // scale down if too big
-    glUniformMatrix4fv(guitarBackpackShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
-    
-    guitarBackpackModel.Draw(guitarBackpackShader);
-    */
-
-    /*
-    sponzaShader.bind();
-    glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-    glUniformMatrix4fv(sponzaShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
-
-    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, target position, up vector
-    glUniformMatrix4fv(sponzaShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
-
-    // Model matrix for the .obj model
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(0.03f)); // scale down if too big
-    glUniformMatrix4fv(sponzaShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
-
-    sponzaModel.Draw(sponzaShader);
-    */
+                // 2. Draw outline
+                outlineShader.bind();
+                glBindVertexArray(VAOOutline);
+                glUniformMatrix4fv(outlineShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
+                glUniform3fv(outlineShader.getUniform("lineColor"), 1, &lineColor[0]);
+                glLineWidth(2.0f);
+                glDrawArrays(GL_LINES, 0, 24);
+            }
+        }
+    }*/
 
 
 
-
-    
-
-    static glm::vec3 helmetMaterialAmbient(1.0f);
-    static glm::vec3 helmetMaterialDiffuse = glm::vec3(1.0f);
-    static glm::vec3 helmetMaterialSpecular = glm::vec3(0.2);
-    static float helmetObjectShininess = 128; //2, 4, 8, 16, 32, 64, 128, 256 (shine level)
-
-    //light
-    static glm::vec3 helmetLightAmbient = glm::vec3(0.2f, 0.2f, 0.2f);
-    static glm::vec3 helmetLightDiffuse = glm::vec3(1.0f, 1.0f, 1.0f);
-    static glm::vec3 helmetLightSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
-
-    static glm::vec3 helmetLightPos = glm::vec3(0.f, 3.0f, 0.f);
-
-    spaceHelmetShader.bind();
-    
-    glUniformMatrix4fv(spaceHelmetShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
-    glUniformMatrix4fv(spaceHelmetShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
-
-    // Model matrix for the .obj model
-    glm::mat4 modelHelm = glm::mat4(1.0f);
-    modelHelm = glm::rotate(modelHelm, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
-    modelHelm = glm::translate(modelHelm, glm::vec3(0.0f, 0.0f, 0.0f));
-    modelHelm = glm::scale(modelHelm, glm::vec3(3.f)); // scale down if too big
-    glUniformMatrix4fv(spaceHelmetShader.getUniform("model"), 1, GL_FALSE, &modelHelm[0][0]);
-    
-    
-    glUniform3fv(spaceHelmetShader.getUniform("viewPosition"), 1, &cameraPos[0]);
-    glUniform3fv(spaceHelmetShader.getUniform("light.position"), 1, &helmetLightPos[0]);
-
-    glUniform3fv(spaceHelmetShader.getUniform("material.ambient"), 1, &helmetMaterialAmbient[0]);
-    glUniform3fv(spaceHelmetShader.getUniform("material.diffuse"), 1, &helmetMaterialDiffuse[0]);
-    glUniform3fv(spaceHelmetShader.getUniform("material.specular"), 1, &helmetMaterialSpecular[0]);
-    glUniform1f(spaceHelmetShader.getUniform("material.shininess"), helmetObjectShininess);
-
-    glUniform3fv(spaceHelmetShader.getUniform("light.ambient"), 1, &helmetLightAmbient[0]);
-    glUniform3fv(spaceHelmetShader.getUniform("light.diffuse"), 1, &helmetLightDiffuse[0]);
-    glUniform3fv(spaceHelmetShader.getUniform("light.specular"), 1, &helmetLightSpecular[0]);
+    //sphere
+    sphereShader.bind();
+    glUniformMatrix4fv(sphereShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+    glUniformMatrix4fv(sphereShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
 
 
-    spaceHelmetModel.Draw(spaceHelmetShader);
-    
+    glBindVertexArray(VAOsphere);
+    glUniformMatrix4fv(sphereShader.getUniform("model"), 1, GL_FALSE, &sphereModel[0][0]);
+    glUniform3fv(sphereShader.getUniform("light.position"), 1, &lightPos[0]);
+    glUniform3fv(sphereShader.getUniform("viewPosition"), 1, &cameraPos[0]);
+
+    glUniform3f(sphereShader.getUniform("material.ambient"), 0.2f, 0.2f, 0.2f);
+    glUniform3f(sphereShader.getUniform("material.diffuse"), 1.0f, 0.0f, 0.0f);
+    glUniform3f(sphereShader.getUniform("material.specular"), 1.0f, 1.0f, 1.0f);
+    glUniform1f(sphereShader.getUniform("material.shininess"), objectShininess);
+
+    glUniform3fv(sphereShader.getUniform("light.ambient"), 1, &lightAmbient[0]);
+    glUniform3fv(sphereShader.getUniform("light.diffuse"), 1, &lightDiffuse[0]);
+    glUniform3fv(sphereShader.getUniform("light.specular"), 1, &lightSpecular[0]);
+    glDrawElements(GL_TRIANGLES, sphereObject.indices.size(), GL_UNSIGNED_INT, 0);
 
 
 
 
-
-    //note: to give us a slight performance boost we're going to render the skybox LAST. 
-    // This way, the depth buffer is completely filled with all the scene's depth values 
-    // so we only have to render the skybox's fragments wherever the early depth test passes, 
-    // greatly reducing the number of fragment shader calls.
-
-
+    //skybox
     glDepthFunc(GL_LEQUAL);  // Use "less than or equal" instead of default "less than" 
 
     skyboxShader.bind();

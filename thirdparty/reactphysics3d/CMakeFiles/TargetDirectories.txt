@@ -1,0 +1,8 @@
+C:/Users/Wootan/Desktop/github_files/Wootan-Yu/3dPhysics/thirdparty/reactphysics3d/CMakeFiles/reactphysics3d.dir
+C:/Users/Wootan/Desktop/github_files/Wootan-Yu/3dPhysics/thirdparty/reactphysics3d/CMakeFiles/test.dir
+C:/Users/Wootan/Desktop/github_files/Wootan-Yu/3dPhysics/thirdparty/reactphysics3d/CMakeFiles/edit_cache.dir
+C:/Users/Wootan/Desktop/github_files/Wootan-Yu/3dPhysics/thirdparty/reactphysics3d/CMakeFiles/rebuild_cache.dir
+C:/Users/Wootan/Desktop/github_files/Wootan-Yu/3dPhysics/thirdparty/reactphysics3d/CMakeFiles/list_install_components.dir
+C:/Users/Wootan/Desktop/github_files/Wootan-Yu/3dPhysics/thirdparty/reactphysics3d/CMakeFiles/install.dir
+C:/Users/Wootan/Desktop/github_files/Wootan-Yu/3dPhysics/thirdparty/reactphysics3d/CMakeFiles/install/local.dir
+C:/Users/Wootan/Desktop/github_files/Wootan-Yu/3dPhysics/thirdparty/reactphysics3d/CMakeFiles/install/strip.dir
