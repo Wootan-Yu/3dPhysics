@@ -18,7 +18,6 @@ add_subdirectory(thirdparty/stb_truetype)		#loading ttf files
 add_subdirectory(thirdparty/glm)				#math
 add_subdirectory(thirdparty/imgui-docking)		#ui
 add_subdirectory(thirdparty/assimp)
-add_subdirectory(thirdparty/reactphysics3d)
 add_subdirectory(thirdparty/JoltPhysics/Build) #the "Build" directory is just a folder name
 
 # Define MY_SOURCES to be a list of all the source files for my game 
@@ -53,4 +52,4 @@ target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURC
 
 
 target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE glm glfw 
-	glad stb_image stb_truetype imgui assimp reactphysics3d Jolt)
+	glad stb_image stb_truetype imgui assimp Jolt)
