@@ -106,44 +106,43 @@ struct SphereMesh {
 };
 
 
+
 struct Engine {
 	GLFWwindow* window;
-	Shader shader;
-	Shader lightCubeShader;
-	Shader objectShader;
+	Shader planeShader;
 	
 	Shader skyboxShader;
-
-	Shader guitarBackpackShader;
-	Model guitarBackpackModel;
 
 	Shader sponzaShader;
 	Model sponzaModel;
 
-	Shader spaceHelmetShader;
-	Model spaceHelmetModel;
-
-	Shader planetShader;
-	Model planetModel;
-
-	Shader asteroidShader;
-	Model asteroidModel;
-
-	GLuint VAOsphere;
-	SphereMesh sphereObject;
-	Shader sphereShader;
-
-	JPH::BodyID sphereBodyID;
-	glm::mat4 sphereModel;
-	float sphereMat[16];
+	//shadow mapping
+	Shader depthShader;
+	GLuint depthMapFBO, depthMap;
 
 	JPH::PhysicsSystem physicsSystem;
 	JPH::BodyInterface* bodyInterface = nullptr;
 
+	//sphere physics
+	std::vector<JPH::BodyID> sphere_bodies;
+	std::vector<glm::mat4> sphereModels;
+	GLuint sphereInstanceVBO, VAOsphere, VBOsphere, EBOsphere;
+	SphereMesh sphereObject;
+	Shader sphereShader;
+
+	float sphereMat[16];
+
+
+	//cube physics
 	JPH::BodyID cubeBodyID;
 	float cubeMat[16];
 	glm::mat4 cubeModel;
 
+	GLuint VAOPhysicsCube, VBOPhysicsCube;
+	GLuint VAOOutline, VBOOutline;
+	
+	Shader physicsCubeShader;
+	Shader outlineShader;
 
 
 
@@ -155,22 +154,12 @@ struct Engine {
 
 	Camera camera;
 	float currentFrame = 0.0f;
-	GLuint VBOcube, VAOcube;
-	GLuint VBOplane, VAOplane;
+	GLuint VBOplane, VAOplane, planeEBO;
 	GLuint VBOlightCube, VAOlightCube;
-	GLuint VAOobject;
 	GLuint VBOskybox, VAOskybox;
 
-	GLuint VAOPhysicsCube;
-	GLuint VAOOutline;
-	
-	Shader physicsCubeShader;
-	Shader outlineShader;
-
-	GLuint texture1; //cube
-	GLuint texture2; //plane
-	GLuint texture3; //object cube
-	GLuint texture4; //object cube
+	GLuint texture1; //plane
+	GLuint texture2; //object cube
 	GLuint textureCubeMap;
 
 	glm::vec3 pointLightPositions[4];
@@ -182,11 +171,13 @@ struct Engine {
 	void initShape();
 	void initShader();
 	void initTexture();
+	void initShadows();
 	void run();
-	void update();
+	void update(float frameDeltaTime);
 	void processInput();
 	void keyInput();
 	void drawShape();
+	void drawbox(Shader& shader);
 	void render();
 };
 
@@ -226,8 +217,6 @@ inline unsigned int loadCubemap(std::vector<std::string> faces)
 	return textureID;
 }
 
-
-// Generate sphere data
 inline SphereMesh generateSphere(float radius, unsigned int sectorCount, unsigned int stackCount)
 {
 	SphereMesh mesh;
@@ -283,4 +272,60 @@ inline SphereMesh generateSphere(float radius, unsigned int sectorCount, unsigne
 	}
 
 	return mesh;
+}
+
+inline JPH::RVec3 generateRandomPosition()
+{
+	std::random_device rd;  // Random device for seed
+	std::mt19937 gen(rd()); // Mersenne Twister generator
+
+	//Uniform distribution in the range [0, windowSize - agentSize]
+	std::uniform_real_distribution<float> distribution_x(0.f, 10.f);
+	std::uniform_real_distribution<float> distribution_y(50.f, 100.f);
+	std::uniform_real_distribution<float> distribution_z(0.f, 10.f);
+	
+
+	//world coordinates
+	int x = distribution_x(gen);
+	int y = distribution_y(gen);
+	int z = distribution_z(gen);
+
+	return JPH::RVec3(x, y, z);
+}
+
+inline unsigned int loadTexture(char const* path)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+
+	int width, height, nrComponents;
+	unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
+	if (data)
+	{
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat 
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		stbi_image_free(data);
+	}
+	else
+	{
+		std::cout << "Texture failed to load at path: " << path << std::endl;
+		stbi_image_free(data);
+	}
+
+	return textureID;
 }

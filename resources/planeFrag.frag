@@ -7,8 +7,6 @@ in vec3 FragPos; // fragment position in world space
 
 // texture sampler
 uniform sampler2D texture1;
-uniform sampler2D texture2;
-uniform bool choice; // 0 = texture1, 1 = texture2
 
 uniform vec3 viewPosition;
 
@@ -35,11 +33,7 @@ uniform Light light;
 
 void main()
 {
-	vec4 tex;
-	if (choice)
-		tex = texture(texture2, TexCoord);
-	else
-		tex = texture(texture1, TexCoord);
+	vec4 tex = texture(texture1, TexCoord);
 
 	//apply Ambient lighting
     vec3 ambient = material.ambient * light.ambient;

@@ -27,6 +27,16 @@ inline float fov = 45.0f; // field of view
 inline float speed = 150.f; // camera speed
 
 
-inline unsigned int amount = 100'000; //no. of asteroids
+inline unsigned int amount = 1; //no. of spheres
 inline float radius = 100.f;
 inline float offset = 25.f;
+
+
+inline const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+inline const glm::vec3 lightPos(0.0f, 5.0f, 0.0f);
+
+inline glm::mat4 view;
+inline glm::mat4 projection;
+
+inline glm::mat4 lightProjection, lightView;
+inline glm::mat4 lightSpaceMatrix;

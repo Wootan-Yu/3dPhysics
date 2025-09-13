@@ -7,8 +7,35 @@ Engine::Engine()
 
 Engine::~Engine()
 {
-    glDeleteVertexArrays(1, &VAOskybox);
+    //VAO
+    glDeleteVertexArrays(1, &VAOplane);
+    glDeleteVertexArrays(1, &VAOPhysicsCube);
+	glDeleteVertexArrays(1, &VAOOutline);
+	glDeleteVertexArrays(1, &VAOsphere);
+	glDeleteVertexArrays(1, &VAOskybox);
+
+	//VBO, EBO
+	//plane
+    glDeleteBuffers(1, &VBOplane);
+	glDeleteBuffers(1, &planeEBO);
+	//cube physics
+    glDeleteBuffers(1, &VBOPhysicsCube);
+	glDeleteBuffers(1, &VBOOutline);
+    //sphere
+    glDeleteBuffers(1, &VBOsphere);
+	glDeleteBuffers(1, &EBOsphere);
+	glDeleteBuffers(1, &sphereInstanceVBO);
+    //skybox
     glDeleteBuffers(1, &VBOskybox);
+
+
+    //textures
+	glDeleteTextures(1, &texture1);
+	glDeleteTextures(1, &texture2);
+    glDeleteTextures(1, &depthMap);
+
+    //framebuffer
+	glDeleteFramebuffers(1, &depthMapFBO);
 }
 
 void Engine::init()
@@ -62,6 +89,7 @@ void Engine::init()
 
 void Engine::initShape()
 {
+    //plane
     float planeVertices[] = {
 		 // positions          // texture    // normals
          0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   0.0f, 0.0f, 1.0f, // top right
@@ -74,8 +102,6 @@ void Engine::initShape()
         0, 3, 1,   // first triangle
         1, 3, 2    // second triangle
     };
-
-    GLuint planeEBO;
 
 	glGenVertexArrays(1, &VAOplane);
 	glGenBuffers(1, &VBOplane);
@@ -102,57 +128,64 @@ void Engine::initShape()
 
 
 
-
+	//physics cube
     float physicsCubeVertices[] = {
-        // Back face
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right         
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-        // Front face
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-        // Left face
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-        // Right face
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right         
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left     
-         // Bottom face
-         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-          0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left
-          0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-          0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-         // Top face
-         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-          0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-          0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right     
-          0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-         -0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left        
+		//positions           // texture    // normals
+        // Back face (0, 0, -1)
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   0.0f,  0.0f, -1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,   0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f,  0.0f, -1.0f,
+
+        // Front face (0, 0, 1)
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,   0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,   0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,   0.0f,  0.0f,  1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,   0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
+
+        // Left face (-1, 0, 0)
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  -1.0f,  0.0f,  0.0f,
+
+        // Right face (1, 0, 0)
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
+
+         // Bottom face (0, -1, 0)
+         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   0.0f, -1.0f,  0.0f,
+          0.5f, -0.5f, -0.5f,  1.0f, 1.0f,   0.0f, -1.0f,  0.0f,
+          0.5f, -0.5f,  0.5f,  1.0f, 0.0f,   0.0f, -1.0f,  0.0f,
+          0.5f, -0.5f,  0.5f,  1.0f, 0.0f,   0.0f, -1.0f,  0.0f,
+         -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
+         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   0.0f, -1.0f,  0.0f,
+
+         // Top face (0, 1, 0)
+         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f,  1.0f,  0.0f,
+          0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   0.0f,  1.0f,  0.0f,
+          0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   0.0f,  1.0f,  0.0f,
+          0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   0.0f,  1.0f,  0.0f,
+         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f,  1.0f,  0.0f,
+         -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f
     };
 
-    unsigned int VBOPhysicsCube;
+
+   
 
     glGenVertexArrays(1, &VAOPhysicsCube);
     glGenBuffers(1, &VBOPhysicsCube);
-
+    
     glBindVertexArray(VAOPhysicsCube);
 
     // Vertex buffer
@@ -160,12 +193,16 @@ void Engine::initShape()
     glBufferData(GL_ARRAY_BUFFER, sizeof(physicsCubeVertices), physicsCubeVertices, GL_STATIC_DRAW);
 
     // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // Texture coordinate attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+	// Normal attribute
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 
 
@@ -190,7 +227,6 @@ void Engine::initShape()
         -0.5f, -0.5f,  0.5f,  -0.5f,  0.5f,  0.5f,
     };
 
-    unsigned int VBOOutline;
     glGenVertexArrays(1, &VAOOutline);
     glGenBuffers(1, &VBOOutline);
 
@@ -205,31 +241,46 @@ void Engine::initShape()
 
 
     
-    //sphere
-    sphereObject = generateSphere(1.0f, 64, 32); // radius = 1.0, resolution
 
-    GLuint VBOsphere, EBOsphere;
+
+    //sphere
+    sphereObject = generateSphere(1.f, 64, 32); // radius = 1.0, resolution
+
     glGenVertexArrays(1, &VAOsphere);
     glGenBuffers(1, &VBOsphere);
     glGenBuffers(1, &EBOsphere);
+    glGenBuffers(1, &sphereInstanceVBO); // <--- instancing buffer created here
 
     glBindVertexArray(VAOsphere);
 
+    // Vertex data (positions + normals)
     glBindBuffer(GL_ARRAY_BUFFER, VBOsphere);
     glBufferData(GL_ARRAY_BUFFER, sphereObject.vertices.size() * sizeof(float), sphereObject.vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOsphere);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereObject.indices.size() * sizeof(unsigned int), sphereObject.indices.data(), GL_STATIC_DRAW);
 
-    // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    // Vertex attributes: position
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 
-    // Normal attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    // Vertex attributes: normal
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 
-    glBindVertexArray(0);
+    // Instancing matrix attribute
+    glBindBuffer(GL_ARRAY_BUFFER, sphereInstanceVBO);
+    glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), nullptr, GL_DYNAMIC_DRAW);
+
+    std::size_t vec4Size = sizeof(glm::vec4);
+    for (GLuint i = 0; i < 4; i++) {
+        glEnableVertexAttribArray(2 + i);
+        glVertexAttribPointer(2 + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(i * vec4Size));
+        glVertexAttribDivisor(2 + i, 1);
+    }
+
+    glBindVertexArray(0); // all done
+
     
 
 
@@ -318,26 +369,35 @@ void Engine::initPhysics()
 
     // 6) Store body interface
     bodyInterface = &physicsSystem.GetBodyInterface();
-    physicsSystem.SetGravity(JPH::Vec3(0, -2.f, 0)); // gentle gravity
+    physicsSystem.SetGravity(JPH::Vec3(0, -9.f, 0)); // gentle gravity
 
+
+    
+    sphere_bodies.reserve(amount);
+    sphereModels.resize(amount);
 
     //sphere
     JPH::SphereShapeSettings sphereSettings(1.0);
     JPH::ShapeRefC sphereShape = sphereSettings.Create().Get();
 
-    JPH::BodyCreationSettings ballSettings(
-        sphereShape,
-        JPH::RVec3(0.f, 15.f, 0.f),
-        JPH::Quat::sIdentity(),
-        JPH::EMotionType::Dynamic,           // movable body
-        Layers::MOVING                       // your object layer
-    );
+    for (uint16_t i = 0; i < amount; i++)
+    {
+        JPH::BodyCreationSettings ballSettings(
+            sphereShape,
+            generateRandomPosition(),
+            JPH::Quat::sIdentity(),
+            JPH::EMotionType::Dynamic,           // movable body
+            Layers::MOVING                       // your object layer
+        );
 
-    ballSettings.mMassPropertiesOverride.mMass = 10.f; // lighter = falls slower (but still gravity applies)
-    ballSettings.mLinearDamping = 0.9f; // slows velocity each tick
-    ballSettings.mRestitution = 1.f;
+        ballSettings.mMassPropertiesOverride.mMass = 5.f; // lighter = falls slower (but still gravity applies)
+        ballSettings.mLinearDamping = 0.9f; // slows velocity each tick
+        ballSettings.mRestitution = 0.8f;
 
-    sphereBodyID = bodyInterface->CreateAndAddBody(ballSettings, JPH::EActivation::Activate);
+        JPH::BodyID sphereBodyID = bodyInterface->CreateAndAddBody(ballSettings, JPH::EActivation::Activate);
+        sphere_bodies.push_back(sphereBodyID);
+    }
+    
 
 
 
@@ -384,55 +444,24 @@ void Engine::initPhysics()
 
 void Engine::initShader()
 {
-    shader.loadShaderProgramFromFile(RESOURCES_PATH "vertex.vert", RESOURCES_PATH "fragment.frag");
-    physicsCubeShader.loadShaderProgramFromFile(RESOURCES_PATH "physicsCubeVert.vert", RESOURCES_PATH "physicsCubeFrag.frag");
+    
+    depthShader.loadShaderProgramFromFile(RESOURCES_PATH "depthShaderVert.vert", RESOURCES_PATH "depthShaderFrag.frag"); //shadow mapping depth shader
+
+    planeShader.loadShaderProgramFromFile(RESOURCES_PATH "planeVert.vert", RESOURCES_PATH "planeFrag.frag"); //plane
+
+    //cube
+    physicsCubeShader.loadShaderProgramFromFile(RESOURCES_PATH "physicsCubeVert.vert", RESOURCES_PATH "physicsCubeFrag.frag"); 
     outlineShader.loadShaderProgramFromFile(RESOURCES_PATH "outlineVert.vert", RESOURCES_PATH "outlineFrag.frag");
-    sphereShader.loadShaderProgramFromFile(RESOURCES_PATH "sphereVert.vert", RESOURCES_PATH "sphereFrag.frag");
-    //lightCubeShader.loadShaderProgramFromFile(RESOURCES_PATH "lightCubeVertex.vert", RESOURCES_PATH "lightCubeFrag.frag");
-	//objectShader.loadShaderProgramFromFile(RESOURCES_PATH "objectVertex.vert", RESOURCES_PATH "objectFrag.frag");
-    //guitarBackpackShader.loadShaderProgramFromFile(RESOURCES_PATH "guitar_backpack/modelLoadvert.vert", RESOURCES_PATH "guitar_backpack/modelLoadfrag.frag");
-    //sponzaShader.loadShaderProgramFromFile(RESOURCES_PATH "Sponza/modelVert.vert", RESOURCES_PATH "Sponza/modelFrag.frag");
-    //spaceHelmetShader.loadShaderProgramFromFile(RESOURCES_PATH "space_helmet/modelVert.vert", RESOURCES_PATH "space_helmet/modelFrag.frag");
-    skyboxShader.loadShaderProgramFromFile(RESOURCES_PATH "skybox/vertShader.vert", RESOURCES_PATH "skybox/fragShader.frag");
+
+    sphereShader.loadShaderProgramFromFile(RESOURCES_PATH "sphereVert.vert", RESOURCES_PATH "sphereFrag.frag"); //sphere
+    skyboxShader.loadShaderProgramFromFile(RESOURCES_PATH "skybox/vertShader.vert", RESOURCES_PATH "skybox/fragShader.frag"); //skybox
 }
 
 void Engine::initTexture()
 {
-    /*
-	//blocks texture
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    // load image, create texture and generate mipmaps
-    int width, height, nrChannels;
-    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char* data = stbi_load(RESOURCES_PATH "blocks.png", &width, &height, &nrChannels, 0);
-    stbi_set_flip_vertically_on_load(true); // must come before stbi_load
-    if (data)
-    {
-        GLenum format = GL_RGB;
-        if (nrChannels == 4)
-            format = GL_RGBA;
-
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        stbi_image_free(data);
-    }
-    else
-    {
-        std::cout << "Failed to load texture: " << stbi_failure_reason() << std::endl;
-    }
-    */
-
-
-    
     //plane texture
-    glGenTextures(1, &texture2);
-    glBindTexture(GL_TEXTURE_2D, texture2);
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
 
     // Set texture wrapping/filtering options
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -459,8 +488,8 @@ void Engine::initTexture()
 
     
     //cube texture
-    glGenTextures(1, &texture3);
-    glBindTexture(GL_TEXTURE_2D, texture3);
+    glGenTextures(1, &texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
 
     // Set texture wrapping/filtering options
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -484,34 +513,6 @@ void Engine::initTexture()
         std::cout << "Failed to load second texture: " << stbi_failure_reason() << std::endl;
     }
     
-
-
-    /*
-    //cube texture
-    glGenTextures(1, &texture4);
-    glBindTexture(GL_TEXTURE_2D, texture4);
-
-    // Set texture wrapping/filtering options
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    // Load texture image
-    int width4, height4, nrChannels4;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* data4 = stbi_load(RESOURCES_PATH "container2_specular.png", &width4, &height4, &nrChannels4, 0);
-    if (data4)
-    {
-        GLenum format = (nrChannels4 == 4) ? GL_RGBA : GL_RGB;
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width4, height4, 0, format, GL_UNSIGNED_BYTE, data4);
-        stbi_image_free(data4);
-    }
-    else
-    {
-        std::cout << "Failed to load second texture: " << stbi_failure_reason() << std::endl;
-    }*/
-    
     
     std::string directory = "C:/Users/Wootan/Desktop/github_files/Wootan-Yu/3dPhysics/resources/skybox/";
 
@@ -529,17 +530,52 @@ void Engine::initTexture()
     textureCubeMap = loadCubemap(faces);
 }
 
+void Engine::initShadows()
+{
+    //shadow mapping framebuffer
+    glGenFramebuffers(1, &depthMapFBO);
+    glGenTextures(1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+        SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+    }
+    
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	physicsCubeShader.bind();
+    glUniform1i(physicsCubeShader.getUniform("diffuseTexture"), 0);
+    glUniform1i(physicsCubeShader.getUniform("shadowMap"), 0);
+}
+
 void Engine::run()
 {
     initShape();
-    initPhysics(); //physics
+    initPhysics();
     initShader();
     initTexture();
+	initShadows();
 	processInput(); //mouse, cursor and scroll input
+    double lastTime = glfwGetTime();
     while (!glfwWindowShouldClose(window))
     {
+        double currentTime = glfwGetTime();
+        float deltaTime = static_cast<float>(currentTime - lastTime);
+        lastTime = currentTime;
         keyInput(); //key input
-		update();
+		update(deltaTime);
 		render();
 	}
 }
@@ -557,7 +593,7 @@ void Engine::keyInput()
         glfwSetWindowShouldClose(window, true);
     const float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		cameraPos += cameraSpeed * cameraFront; // move forward
+        cameraPos += cameraSpeed * cameraFront; // move forward
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		cameraPos -= cameraSpeed * cameraFront; // move backward
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
@@ -577,39 +613,71 @@ void Engine::keyInput()
             JPH::Quat::sIdentity(),
             JPH::EActivation::Activate
         );
+
+        bodyInterface->SetLinearAndAngularVelocity(
+            cubeBodyID,
+            JPH::Vec3(0, 0, 0),  // linear velocity
+            JPH::Vec3(0, 0, 0)   // angular velocity
+        );
     }
     if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
     {
-        // Move cube back to (0, 20, 0) with no rotation, zero velocity
-        bodyInterface->SetPositionAndRotation(
-            sphereBodyID,
-            JPH::RVec3(0.0f, 15.0f, 0.0f),
-            JPH::Quat::sIdentity(),
-            JPH::EActivation::Activate
-        );
+        for (uint16_t i = 0; i < amount; i++)
+        {
+            bodyInterface->SetPositionAndRotation(
+                sphere_bodies[i],
+                generateRandomPosition(),
+                JPH::Quat::sIdentity(),
+                JPH::EActivation::Activate
+            );
+
+            bodyInterface->SetLinearAndAngularVelocity(
+                sphere_bodies[i],
+                JPH::Vec3(0, 0, 0),
+                JPH::Vec3(0, 0, 0)
+            );
+        }
     }
 
 
     //std::cout << cameraPos.x << ", " << cameraPos.y << ", " << cameraPos.z << '\n';
 }
 
-void Engine::update()
+void Engine::update(float frameDeltaTime)
 {
     // Create temporary memory allocator and job system
     static JPH::TempAllocatorImpl tempAllocator(10 * 1024 * 1024);
     static JPH::JobSystemThreadPool jobSystem(JPH::cMaxPhysicsJobs, JPH::cMaxPhysicsBarriers, std::thread::hardware_concurrency() - 1);
 
-    // Step physics
-    physicsSystem.Update(1.0f / 60.0f, 1, &tempAllocator, &jobSystem);
+    static const float fixedDeltaTime = 1.0f / 120.0f;
+    static float accumulator = 0.0f;
+
+    // Clamp large delta times to prevent spiral of death
+    frameDeltaTime = std::min(frameDeltaTime, 0.1f);
+    accumulator += frameDeltaTime;
+
+    while (accumulator >= fixedDeltaTime)
+    {
+        // Substep physics
+        physicsSystem.Update(fixedDeltaTime, 1, &tempAllocator, &jobSystem);
+        accumulator -= fixedDeltaTime;
+    }
 
     // Fetch cube transform
     JPH::RMat44 cube = bodyInterface->GetCenterOfMassTransform(cubeBodyID);
     cube.StoreFloat4x4((JPH::Float4*)cubeMat);  // reinterpret as float[16]
     cubeModel = glm::make_mat4(cubeMat);
 
-    JPH::RMat44 sphere = bodyInterface->GetCenterOfMassTransform(sphereBodyID);
-    sphere.StoreFloat4x4((JPH::Float4*)sphereMat);
-    sphereModel = glm::make_mat4(sphereMat);
+
+    for (uint16_t i = 0; i < amount; i++)
+    {
+        JPH::RMat44 sphere = bodyInterface->GetCenterOfMassTransform(sphere_bodies[i]);
+        sphere.StoreFloat4x4((JPH::Float4*)sphereMat);
+        sphereModels[i] = glm::make_mat4(sphereMat);
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, sphereInstanceVBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sphereModels.size() * sizeof(glm::mat4), sphereModels.data());
 }
 
 void Engine::drawShape()
@@ -624,22 +692,14 @@ void Engine::drawShape()
     static glm::vec3 lightDiffuse(1.0f, 1.0f, 0.6f); // brighter yellow
     static glm::vec3 lightSpecular(1.0f, 1.0f, 1.0f);
 
-    static glm::vec3 lightPos(0.f, 3.0f, 0.f);
-
     //plane
-    shader.bind();
-    //projection matrix
-    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, target position, up vector
-    glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 45.0f);
-    
+    planeShader.bind();
+    glUniformMatrix4fv(planeShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+    glUniformMatrix4fv(planeShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
 
-    glUniformMatrix4fv(shader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
-    glUniformMatrix4fv(shader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
-
-    glUniform1i(shader.getUniform("choice"), 1); //set the bool to 1
-    glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, texture2);
-    glUniform1i(shader.getUniform("texture2"), 1); // set the texture unit 1 to texture2
+    glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture1);
+    glUniform1i(planeShader.getUniform("texture1"), 0); // set the texture unit 1 to texture2
 
 	glBindVertexArray(VAOplane);
 
@@ -648,34 +708,21 @@ void Engine::drawShape()
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	model = glm::scale(model, glm::vec3(20.0f, 20.0f, 1.0f));
 	
-    glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
-	glUniform3fv(shader.getUniform("light.position"), 1, &lightPos[0]);
-    glUniform3fv(shader.getUniform("viewPosition"), 1, &cameraPos[0]);
+    glUniformMatrix4fv(planeShader.getUniform("model"), 1, GL_FALSE, &model[0][0]);
+	glUniform3fv(planeShader.getUniform("light.position"), 1, &lightPos[0]);
+    glUniform3fv(planeShader.getUniform("viewPosition"), 1, &cameraPos[0]);
 
-    glUniform3fv(shader.getUniform("material.ambient"), 1, &materialAmbient[0]);
-    glUniform3fv(shader.getUniform("material.diffuse"), 1, &materialDiffuse[0]);
-    glUniform3fv(shader.getUniform("material.specular"), 1, &materialSpecular[0]);
-    glUniform1f(shader.getUniform("material.shininess"), objectShininess);
+    glUniform3fv(planeShader.getUniform("material.ambient"), 1, &materialAmbient[0]);
+    glUniform3fv(planeShader.getUniform("material.diffuse"), 1, &materialDiffuse[0]);
+    glUniform3fv(planeShader.getUniform("material.specular"), 1, &materialSpecular[0]);
+    glUniform1f(planeShader.getUniform("material.shininess"), objectShininess);
 
-    glUniform3fv(shader.getUniform("light.ambient"), 1, &lightAmbient[0]);
-    glUniform3fv(shader.getUniform("light.diffuse"), 1, &lightDiffuse[0]);
-    glUniform3fv(shader.getUniform("light.specular"), 1, &lightSpecular[0]);
+    glUniform3fv(planeShader.getUniform("light.ambient"), 1, &lightAmbient[0]);
+    glUniform3fv(planeShader.getUniform("light.diffuse"), 1, &lightDiffuse[0]);
+    glUniform3fv(planeShader.getUniform("light.specular"), 1, &lightSpecular[0]);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     
-
-    
-
-
-    //physics cubes
-    physicsCubeShader.bind();
-    glUniformMatrix4fv(physicsCubeShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
-    glUniformMatrix4fv(physicsCubeShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
-
-
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, texture3);
-    glUniform1i(physicsCubeShader.getUniform("texture1"), 2); // set the texture unit 0 to texture1
 
     
     //outline
@@ -685,14 +732,6 @@ void Engine::drawShape()
 
     static glm::vec3 lineColor(1.f, 1.f, 1.f);
 
-
-    // 1. Draw solid cube
-    physicsCubeShader.bind();
-    glBindVertexArray(VAOPhysicsCube);
-    glUniformMatrix4fv(physicsCubeShader.getUniform("model"), 1, GL_FALSE, &cubeModel[0][0]);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-
-    // 2. Draw outline
     outlineShader.bind();
     glBindVertexArray(VAOOutline);
     glUniformMatrix4fv(outlineShader.getUniform("model"), 1, GL_FALSE, &cubeModel[0][0]);
@@ -733,13 +772,10 @@ void Engine::drawShape()
     glUniformMatrix4fv(sphereShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
     glUniformMatrix4fv(sphereShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
 
-
-    glBindVertexArray(VAOsphere);
-    glUniformMatrix4fv(sphereShader.getUniform("model"), 1, GL_FALSE, &sphereModel[0][0]);
     glUniform3fv(sphereShader.getUniform("light.position"), 1, &lightPos[0]);
     glUniform3fv(sphereShader.getUniform("viewPosition"), 1, &cameraPos[0]);
 
-    glUniform3f(sphereShader.getUniform("material.ambient"), 0.2f, 0.2f, 0.2f);
+    glUniform3f(sphereShader.getUniform("material.ambient"), 0.2f, 0.f, 0.f);
     glUniform3f(sphereShader.getUniform("material.diffuse"), 1.0f, 0.0f, 0.0f);
     glUniform3f(sphereShader.getUniform("material.specular"), 1.0f, 1.0f, 1.0f);
     glUniform1f(sphereShader.getUniform("material.shininess"), objectShininess);
@@ -747,7 +783,9 @@ void Engine::drawShape()
     glUniform3fv(sphereShader.getUniform("light.ambient"), 1, &lightAmbient[0]);
     glUniform3fv(sphereShader.getUniform("light.diffuse"), 1, &lightDiffuse[0]);
     glUniform3fv(sphereShader.getUniform("light.specular"), 1, &lightSpecular[0]);
-    glDrawElements(GL_TRIANGLES, sphereObject.indices.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(VAOsphere);
+    glDrawElementsInstanced(GL_TRIANGLES, sphereObject.indices.size(), GL_UNSIGNED_INT, 0, amount);
 
 
 
@@ -774,26 +812,67 @@ void Engine::drawShape()
 
 }
 
+void Engine::drawbox(Shader& shader)
+{
+    // 1. Draw solid cube
+    shader.bind();
+    glBindVertexArray(VAOPhysicsCube);
+    glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &cubeModel[0][0]);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+
 void Engine::render() 
 {
-	//deltaTime calculation
-    currentFrame = glfwGetTime();
-    deltaTime = currentFrame - lastFrame;
-    lastFrame = currentFrame;
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // 1. first render to depth map
+    float near_plane = 1.0f, far_plane = 7.5f;
+    lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+    lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+    lightSpaceMatrix = lightProjection * lightView;
+
+    depthShader.bind();
+    glUniformMatrix4fv(depthShader.getUniform("lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+    
+    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
+		drawbox(depthShader);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 
+	//reset viewport
     int width = 0, height = 0;
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
-
-
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    // 2. then render scene as normal with shadow mapping (using depth map)
+	physicsCubeShader.bind();
+    //projection matrix
+    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, target position, up vector
+    projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 45.0f);
+    glUniformMatrix4fv(physicsCubeShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
+    glUniformMatrix4fv(physicsCubeShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
+
+	glUniform3fv(physicsCubeShader.getUniform("viewPos"), 1, &cameraPos[0]);
+    glUniform3fv(physicsCubeShader.getUniform("lightPos"), 1, &lightPos[0]);
+    glUniformMatrix4fv(physicsCubeShader.getUniform("lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	drawbox(physicsCubeShader);
 
 
-	drawShape();
 
+
+    drawShape();
 
     glfwSwapBuffers(window);
     glfwPollEvents();
