@@ -119,6 +119,9 @@ struct Engine {
 	//shadow mapping
 	Shader depthShader;
 	GLuint depthMapFBO, depthMap;
+	Shader debugDepthQuad;
+	unsigned int quadVAO = 0;
+	unsigned int quadVBO;
 
 	JPH::PhysicsSystem physicsSystem;
 	JPH::BodyInterface* bodyInterface = nullptr;
@@ -178,6 +181,7 @@ struct Engine {
 	void keyInput();
 	void drawShape();
 	void drawbox(Shader& shader);
+	void drawQuad();
 	void render();
 };
 
@@ -280,17 +284,13 @@ inline JPH::RVec3 generateRandomPosition()
 	std::mt19937 gen(rd()); // Mersenne Twister generator
 
 	//Uniform distribution in the range [0, windowSize - agentSize]
-	std::uniform_real_distribution<float> distribution_x(0.f, 10.f);
-	std::uniform_real_distribution<float> distribution_y(50.f, 100.f);
-	std::uniform_real_distribution<float> distribution_z(0.f, 10.f);
+	std::uniform_real_distribution<float> distribution_y(15.f, 30.f);
 	
 
 	//world coordinates
-	int x = distribution_x(gen);
 	int y = distribution_y(gen);
-	int z = distribution_z(gen);
 
-	return JPH::RVec3(x, y, z);
+	return JPH::RVec3(0.f, y, 0.f);
 }
 
 inline unsigned int loadTexture(char const* path)

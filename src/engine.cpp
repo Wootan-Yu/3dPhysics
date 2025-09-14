@@ -90,6 +90,7 @@ void Engine::init()
 void Engine::initShape()
 {
     //plane
+    /*
     float planeVertices[] = {
 		 // positions          // texture    // normals
          0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   0.0f, 0.0f, 1.0f, // top right
@@ -97,34 +98,70 @@ void Engine::initShape()
         -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,   0.0f, 0.0f, 1.0f, // bottom left
         -0.5f,  0.5f, 0.0f,   0.0f, 1.0f,   0.0f, 0.0f, 1.0f, // top left 
     };
+    */
 
+    /*
+	float planeVertices[] = {
+		// positions            // texture      // normals
+		 25.0f,  0.0f,  25.0f,  25.0f,  0.0f,   0.0f, 1.0f, 0.0f, // top right
+		 25.0f,  0.0f, -25.0f,  25.0f, 25.0f,   0.0f, 1.0f, 0.0f, // bottom right
+		-25.0f,  0.0f, -25.0f,   0.0f, 25.0f,   0.0f, 1.0f, 0.0f, // bottom left
+		-25.0f,  0.0f,  25.0f,   0.0f,  0.0f,   0.0f, 1.0f, 0.0f, // top left 
+	};
     unsigned int planeIndices[] = {
         0, 3, 1,   // first triangle
         1, 3, 2    // second triangle
     };
-
+    
 	glGenVertexArrays(1, &VAOplane);
 	glGenBuffers(1, &VBOplane);
 
 	glBindVertexArray(VAOplane);
-
+    
 	glBindBuffer(GL_ARRAY_BUFFER, VBOplane);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), planeVertices, GL_STATIC_DRAW);
 
-
+    
 	glGenBuffers(1, &planeEBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(planeIndices), planeIndices, GL_STATIC_DRAW);
  
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-
+    
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-
+    
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
     glEnableVertexAttribArray(2);
-    
+    */
+
+    float planeVertices[] = {
+        // positions            // texcoords    //normals               
+        -25.0f, -0.5f,  25.0f,  0.0f,  0.0f,    0.0f, 1.0f, 0.0f,  // bottom-left
+         25.0f, -0.5f,  25.0f,  25.0f, 0.0f,    0.0f, 1.0f, 0.0f,  // bottom-right
+        -25.0f, -0.5f, -25.0f,  0.0f,  25.0f,   0.0f, 1.0f, 0.0f,  // top-left
+
+        -25.0f, -0.5f, -25.0f,  0.0f,  25.0f,   0.0f, 1.0f, 0.0f,  // top-left
+         25.0f, -0.5f,  25.0f,  25.0f, 0.0f,    0.0f, 1.0f, 0.0f,  // bottom-right
+         25.0f, -0.5f, -25.0f,  25.0f, 25.0f,   0.0f, 1.0f, 0.0f   // top-right
+    };
+
+    // plane VAO
+    unsigned int planeVBO;
+    glGenVertexArrays(1, &VAOplane);
+    glGenBuffers(1, &planeVBO);
+    glBindVertexArray(VAOplane);
+    glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), planeVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+    glBindVertexArray(0);
+
 
 
 
@@ -240,7 +277,29 @@ void Engine::initShape()
     glBindVertexArray(0);
 
 
-    
+
+	//quad for visualizing depth map
+    if (quadVAO == 0)
+    {
+        float quadVertices[] = {
+            // positions        // texture Coords
+            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+        };
+        // setup plane VAO
+        glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    }
+
 
 
     //sphere
@@ -369,8 +428,6 @@ void Engine::initPhysics()
 
     // 6) Store body interface
     bodyInterface = &physicsSystem.GetBodyInterface();
-    physicsSystem.SetGravity(JPH::Vec3(0, -9.f, 0)); // gentle gravity
-
 
     
     sphere_bodies.reserve(amount);
@@ -407,15 +464,14 @@ void Engine::initPhysics()
 
     JPH::BodyCreationSettings cubeSettings(
         cubeShape,
-        JPH::RVec3(0.0f, 20.0f, 0.0f),        // <-- initial position (y = 5 units above ground)
+        JPH::RVec3(0.0f, 30.0f, 0.0f),        // <-- initial position (y = 5 units above ground)
         JPH::Quat::sIdentity(),              // no rotation
         JPH::EMotionType::Dynamic,           // movable body
         Layers::MOVING                       // your object layer
     );
 
-    cubeSettings.mMotionType = JPH::EMotionType::Dynamic;
     cubeSettings.mOverrideMassProperties = JPH::EOverrideMassProperties::CalculateInertia;
-    cubeSettings.mMassPropertiesOverride.mMass = 5.f; // lighter = falls slower (but still gravity applies)
+    cubeSettings.mMassPropertiesOverride.mMass = 15.f; // lighter = falls slower (but still gravity applies)
     cubeSettings.mLinearDamping = 0.9f; // slows velocity each tick
     cubeSettings.mRestitution = 0.8f;
 
@@ -444,7 +500,7 @@ void Engine::initPhysics()
 
 void Engine::initShader()
 {
-    
+	debugDepthQuad.loadShaderProgramFromFile(RESOURCES_PATH "debugQuadVert.vert", RESOURCES_PATH "debugQuadFrag.frag"); //debug quad shader for visualizing depth map
     depthShader.loadShaderProgramFromFile(RESOURCES_PATH "depthShaderVert.vert", RESOURCES_PATH "depthShaderFrag.frag"); //shadow mapping depth shader
 
     planeShader.loadShaderProgramFromFile(RESOURCES_PATH "planeVert.vert", RESOURCES_PATH "planeFrag.frag"); //plane
@@ -534,14 +590,17 @@ void Engine::initShadows()
 {
     //shadow mapping framebuffer
     glGenFramebuffers(1, &depthMapFBO);
+
     glGenTextures(1, &depthMap);
     glBindTexture(GL_TEXTURE_2D, depthMap);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
         SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
@@ -555,9 +614,12 @@ void Engine::initShadows()
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	physicsCubeShader.bind();
+	debugDepthQuad.bind();
+    glUniform1i(debugDepthQuad.getUniform("depthMap"), 0);
+
+	/*physicsCubeShader.bind();
     glUniform1i(physicsCubeShader.getUniform("diffuseTexture"), 0);
-    glUniform1i(physicsCubeShader.getUniform("shadowMap"), 0);
+    glUniform1i(physicsCubeShader.getUniform("shadowMap"), 0);*/
 }
 
 void Engine::run()
@@ -571,8 +633,8 @@ void Engine::run()
     double lastTime = glfwGetTime();
     while (!glfwWindowShouldClose(window))
     {
-        double currentTime = glfwGetTime();
-        float deltaTime = static_cast<float>(currentTime - lastTime);
+        float currentTime = static_cast<float>(glfwGetTime());
+        deltaTime = currentTime - lastTime;
         lastTime = currentTime;
         keyInput(); //key input
 		update(deltaTime);
@@ -609,7 +671,7 @@ void Engine::keyInput()
         // Move cube back to (0, 20, 0) with no rotation, zero velocity
         bodyInterface->SetPositionAndRotation(
             cubeBodyID,
-            JPH::RVec3(0.0f, 20.0f, 0.0f),
+            JPH::RVec3(0.0f, 30.0f, 0.0f),
             JPH::Quat::sIdentity(),
             JPH::EActivation::Activate
         );
@@ -663,10 +725,11 @@ void Engine::update(float frameDeltaTime)
         accumulator -= fixedDeltaTime;
     }
 
+    //just uncomment this out if i want the cube to move
     // Fetch cube transform
-    JPH::RMat44 cube = bodyInterface->GetCenterOfMassTransform(cubeBodyID);
-    cube.StoreFloat4x4((JPH::Float4*)cubeMat);  // reinterpret as float[16]
-    cubeModel = glm::make_mat4(cubeMat);
+    //JPH::RMat44 cube = bodyInterface->GetCenterOfMassTransform(cubeBodyID);
+    //cube.StoreFloat4x4((JPH::Float4*)cubeMat);  // reinterpret as float[16]
+    //cubeModel = glm::make_mat4(cubeMat);
 
 
     for (uint16_t i = 0; i < amount; i++)
@@ -766,7 +829,6 @@ void Engine::drawShape()
     }*/
 
 
-
     //sphere
     sphereShader.bind();
     glUniformMatrix4fv(sphereShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
@@ -814,66 +876,128 @@ void Engine::drawShape()
 
 void Engine::drawbox(Shader& shader)
 {
-    // 1. Draw solid cube
     shader.bind();
+    //plane
+    glBindVertexArray(VAOplane);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);  // Make sure this is the correct texture ID
+
+    cubeModel = glm::mat4(1.0f);
+    cubeModel = glm::translate(cubeModel, glm::vec3(0.0f, 0.3f, 0.0));
+    glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &cubeModel[0][0]);
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
+
+
+    //cube
     glBindVertexArray(VAOPhysicsCube);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture2);  // Make sure this is the correct texture ID
+
+	//just comment this out if i want the cube to move
+	cubeModel = glm::mat4(1.0f);
+    cubeModel = glm::translate(cubeModel, glm::vec3(0.8f, 1.5f, 0.3));
+    cubeModel = glm::scale(cubeModel, glm::vec3(0.5f));
+
+    glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &cubeModel[0][0]);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    //just comment this out if i want the cube to move
+    cubeModel = glm::mat4(1.0f);
+    cubeModel = glm::translate(cubeModel, glm::vec3(2.0f, 0.1f, 1.0));
+    cubeModel = glm::scale(cubeModel, glm::vec3(0.5f));
+
+    glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &cubeModel[0][0]);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    //just comment this out if i want the cube to move
+    cubeModel = glm::mat4(1.0f);
+    cubeModel = glm::translate(cubeModel, glm::vec3(-1.0f, 0.1f, 2.0));
+    cubeModel = glm::rotate(cubeModel, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
+    cubeModel = glm::scale(cubeModel, glm::vec3(0.25f));
+
     glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &cubeModel[0][0]);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
+void Engine::drawQuad()
+{
+    //quad for visualizing depth map
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindVertexArray(0);
+}
+
 void Engine::render() 
 {
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f); 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 
-    // 1. first render to depth map
-    float near_plane = 1.0f, far_plane = 7.5f;
-    lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-    lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-    lightSpaceMatrix = lightProjection * lightView;
-
-    depthShader.bind();
-    glUniformMatrix4fv(depthShader.getUniform("lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+    // 1. first render to depth map 
+    float near_plane = 1.0f, far_plane = 7.5f; 
+    lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane); 
+    lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0)); 
+    lightSpaceMatrix = lightProjection * lightView; 
     
-    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
-		drawbox(depthShader);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
-
-	//reset viewport
-    int width = 0, height = 0;
-    glfwGetFramebufferSize(window, &width, &height);
-    glViewport(0, 0, width, height);
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    depthShader.bind(); 
+    glUniformMatrix4fv(depthShader.getUniform("lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix)); 
     
-    // 2. then render scene as normal with shadow mapping (using depth map)
-	physicsCubeShader.bind();
-    //projection matrix
-    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, target position, up vector
-    projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 45.0f);
-    glUniformMatrix4fv(physicsCubeShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]);
-    glUniformMatrix4fv(physicsCubeShader.getUniform("view"), 1, GL_FALSE, &view[0][0]);
+    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT); 
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO); 
+    glClear(GL_DEPTH_BUFFER_BIT); 
+    glActiveTexture(GL_TEXTURE1); 
+    glBindTexture(GL_TEXTURE_2D, texture2); 
+    drawbox(depthShader); 
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); 
+    
+    //reset viewport 
+    int width = 0, height = 0; 
+    glfwGetFramebufferSize(window, &width, &height); 
+    glViewport(0, 0, width, height); 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 
-	glUniform3fv(physicsCubeShader.getUniform("viewPos"), 1, &cameraPos[0]);
-    glUniform3fv(physicsCubeShader.getUniform("lightPos"), 1, &lightPos[0]);
-    glUniformMatrix4fv(physicsCubeShader.getUniform("lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
-    glActiveTexture(GL_TEXTURE1);
+    
+    // 2. then render scene as normal with shadow mapping (using depth map) 
+    physicsCubeShader.bind(); 
+    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); 
+    projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 45.0f); 
+    
+    glUniformMatrix4fv(physicsCubeShader.getUniform("projection"), 1, GL_FALSE, &projection[0][0]); 
+    glUniformMatrix4fv(physicsCubeShader.getUniform("view"), 1, GL_FALSE, &view[0][0]); 
+    glUniform3fv(physicsCubeShader.getUniform("viewPos"), 1, &cameraPos[0]); 
+    glUniform3fv(physicsCubeShader.getUniform("lightPos"), 1, &lightPos[0]); 
+    glUniformMatrix4fv(physicsCubeShader.getUniform("lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix)); 
+    
+    // Bind color texture (texture2) to texture unit 0
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture2);
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, depthMap);
-	drawbox(physicsCubeShader);
+    glUniform1i(physicsCubeShader.getUniform("diffuseTexture"), 0);
+
+    // Bind depth map to texture unit 1
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glUniform1i(physicsCubeShader.getUniform("shadowMap"), 1);
+    drawbox(physicsCubeShader); 
+    
+    
+    
+    debugDepthQuad.bind();
+    glUniform1f(debugDepthQuad.getUniform("nearPlane"), near_plane);
+    glUniform1f(debugDepthQuad.getUniform("farPlane"), far_plane);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    
+    //drawQuad();
 
 
+    
+    //drawShape();
 
 
-    drawShape();
-
-    glfwSwapBuffers(window);
-    glfwPollEvents();
+    glfwSwapBuffers(window); 
+    glfwPollEvents(); 
 }
