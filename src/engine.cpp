@@ -884,7 +884,7 @@ void Engine::drawbox(Shader& shader)
     glBindTexture(GL_TEXTURE_2D, texture1);  // Make sure this is the correct texture ID
 
     cubeModel = glm::mat4(1.0f);
-    cubeModel = glm::translate(cubeModel, glm::vec3(0.0f, 0.3f, 0.0));
+    cubeModel = glm::translate(cubeModel, glm::vec3(0.0f, 0.35f, 0.0));
     glUniformMatrix4fv(shader.getUniform("model"), 1, GL_FALSE, &cubeModel[0][0]);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -951,7 +951,9 @@ void Engine::render()
     glClear(GL_DEPTH_BUFFER_BIT); 
     glActiveTexture(GL_TEXTURE1); 
     glBindTexture(GL_TEXTURE_2D, texture2); 
-    drawbox(depthShader); 
+    drawbox(depthShader);
+
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0); 
     
     //reset viewport 
@@ -982,7 +984,6 @@ void Engine::render()
     glBindTexture(GL_TEXTURE_2D, depthMap);
     glUniform1i(physicsCubeShader.getUniform("shadowMap"), 1);
     drawbox(physicsCubeShader); 
-    
     
     
     debugDepthQuad.bind();
